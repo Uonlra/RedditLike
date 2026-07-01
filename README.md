@@ -1,32 +1,145 @@
-# React + TypeScript + Vite
+# RedditLike
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+一个仿 Reddit 社区的前端跟做训练项目，使用 TypeScript + React 构建。目标是通过从零到一实现一个内容社区应用，系统掌握现代 React 前端开发的核心技能。
 
-Currently, two official plugins are available:
+## 项目简介
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+RedditLike 是一个类 Reddit 的内容社区 Web 应用，用户可以浏览/创建板块（Subreddit）、发布帖子、评论、投票互动以及管理个人主页。本项目作为 TS + React 的实战训练，重点在于工程化实践与功能迭代，而非追求与 Reddit 完全一致的 UI。
 
-## React Compiler
+## 技术栈
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| 类别 | 技术 | 说明 |
+| --- | --- | --- |
+| 语言 | TypeScript 6 | 全量类型安全 |
+| 框架 | React 19 | 函数组件 + Hooks |
+| 构建 | Vite 8 | 快速冷启动与 HMR |
+| 代码规范 | Oxlint | 高性能 Lint |
+| 路由 | React Router | 客户端路由（待引入） |
+| 状态管理 | Zustand / Redux Toolkit | 待定，按阶段引入 |
+| 数据请求 | TanStack Query | 服务端状态管理（待引入） |
+| 样式方案 | Tailwind CSS / CSS Modules | 待定 |
+| 测试 | Vitest + React Testing Library | 待引入 |
+| Mock | MSW | 接口模拟（待引入） |
 
-## Expanding the Oxlint configuration
+> 标注「待引入」的依赖将按学习阶段逐步添加，避免一次性堆砌。
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## 学习目标
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+- 熟练掌握 TypeScript 在 React 项目中的类型建模（props、hooks、事件、泛型）
+- 掌握 React 19 核心 Hooks 与函数组件设计模式
+- 掌握客户端路由、状态管理、数据请求的分层与组织
+- 建立组件化思维，编写可复用、可测试的 UI 组件
+- 形成完整的工程化习惯：目录规范、Lint、Git、测试、构建
+
+## 学习路线
+
+本项目按由浅入深、由核心到外围的方式分阶段推进。每个阶段都是可独立交付的里程碑，完成后再进入下一阶段。
+
+### 阶段 0：环境与基础（已完成）
+
+- [x] Vite + React + TypeScript 脚手架
+- [x] Oxlint 代码规范
+- [x] Git 仓库初始化
+- [ ] 目录结构约定与基础布局搭建
+
+### 阶段 1：布局与路由
+
+- [ ] 引入 React Router，搭建应用骨架
+- [ ] 实现整体布局：顶部导航 / 侧边栏 / 主内容区
+- [ ] 路由规划：首页、板块页、帖子详情页、用户页
+- [ ] 静态页面占位与导航跳转
+
+### 阶段 2：静态组件与数据建模
+
+- [ ] 定义核心领域类型（Post、Subreddit、User、Comment、Vote）
+- [ ] 实现帖子卡片、帖子列表、板块卡片等展示组件
+- [ ] 使用本地 mock 数据驱动页面渲染
+- [ ] 拆分容器组件与展示组件
+
+### 阶段 3：状态管理
+
+- [ ] 引入 Zustand 或 Redux Toolkit
+- [ ] 管理全局状态：当前用户、主题、已读帖子等
+- [ ] 实现投票（upvote/downvote）交互与本地状态联动
+- [ ] 理解客户端状态 vs 服务端状态的边界
+
+### 阶段 4：数据请求与 Mock
+
+- [ ] 引入 TanStack Query 处理服务端状态
+- [ ] 使用 MSW 搭建 Mock 接口层
+- [ ] 实现帖子列表、详情、评论的加载与缓存
+- [ ] 处理加载态、错误态、空态、分页/无限滚动
+
+### 阶段 5：用户系统与表单
+
+- [ ] 登录 / 注册页面与表单校验
+- [ ] 模拟鉴权（token 存储与请求拦截）
+- [ ] 受保护路由与权限控制
+- [ ] 发帖、评论的创建与提交
+
+### 阶段 6：进阶功能
+
+- [ ] 搜索功能
+- [ ] 个人主页（帖子历史、收藏）
+- [ ] 消息通知（模拟）
+- [ ] 板块订阅与个性化首页
+
+### 阶段 7：质量与部署
+
+- [ ] 关键组件单元测试（Vitest + RTL）
+- [ ] 性能优化：代码分割、懒加载、memo 化
+- [ ] 构建产物分析与部署（Vercel / Netlify）
+- [ ] README 完善与项目复盘
+
+## 目录结构（规划）
+
+```
+src/
+  assets/          # 静态资源
+  components/      # 通用展示组件
+  features/        # 按领域组织的业务模块
+    posts/
+    subreddits/
+    auth/
+    comments/
+  layouts/         # 布局组件
+  routes/          # 路由配置
+  store/           # 全局状态
+  services/        # 数据请求层
+  types/           # 全局类型定义
+  hooks/           # 自定义 Hooks
+  utils/           # 工具函数
+  App.tsx
+  main.tsx
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## 快速开始
+
+```bash
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+
+# 类型检查 + 构建
+npm run build
+
+# 预览构建产物
+npm run preview
+
+# 代码检查
+npm run lint
+```
+
+## 训练原则
+
+1. **分阶段交付**：每阶段完成后提交一次完整成果，便于回溯与复盘。
+2. **先类型后实现**：先建模领域类型，再编写组件逻辑，强化类型驱动开发。
+3. **组件职责单一**：展示组件保持纯函数，副作用与数据逻辑下沉到容器/Hooks。
+4. **不过度设计**：按当前阶段需要引入依赖，避免提前堆砌技术栈。
+5. **每阶段记录**：在本文件或单独笔记中记录踩坑点与决策理由。
+
+## 进度追踪
+
+当前阶段：**阶段 1 — 布局与路由**（待开始）
