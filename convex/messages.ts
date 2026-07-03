@@ -8,8 +8,8 @@ export const getForCurrentUser = query({
       throw new Error("Not authenticated");
     }
     return await ctx.db
-      .query("messages")
-      .filter((q) => q.eq(q.field("author"), identity.email))
+      .query("users")
+      .filter((q) => q.eq(q.field("username"), identity.email))
       .collect();
   },
 });
