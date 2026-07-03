@@ -11,6 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
+.gitignore
+.env
+.env.local
+
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +26,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+## ai reference
+.agents
+convex/_generated/ai
+.opencode
+AGENTS.md
+CODEX.md
+skills-lock.json
