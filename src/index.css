@@ -129,42 +129,15 @@ code {
   font-size: 13px;
 }
 
-#root {
+#root,
+main {
   min-height: 100svh;
 }
 
 main {
-  width: min(100%, 1120px);
-  min-height: 100svh;
-  margin: 0 auto;
-  padding: var(--space-6);
   color: var(--color-text-muted);
-}
-
-main > div,
-main > p {
-  max-width: 420px;
-  margin: var(--space-6) auto 0;
-}
-
-main > div {
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-5);
-  background: var(--color-surface-1);
 }
 
 .cl-rootBox {
   color: var(--color-text);
-}
-
-@media (max-width: 720px) {
-  main {
-    padding: var(--space-4);
-  }
-
-  main > div,
-  main > p {
-    max-width: 100%;
-  }
 }
