@@ -7,9 +7,12 @@ export const getForCurrentUser = query({
     if (identity === null) {
       throw new Error("Not authenticated");
     }
-    return await ctx.db
+
+    const user = await ctx.db
       .query("users")
-      .filter((q) => q.eq(q.field("username"), identity.email))
-      .collect();
+      .withIndex("by_externalId", (q) => q.eq("externalId", identity.tokenIdentifier))
+      .unique();
+
+    return user === null ? [] : [user];
   },
 });
