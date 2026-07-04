@@ -1,7 +1,7 @@
 import { internalMutation, query } from "./_generated/server";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import type { UserJSON } from "@clerk/backend";
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import type { Validator } from "convex/values";
 import { clerkTokenIdentifier } from "./authConstants";
 
@@ -60,8 +60,34 @@ export const deleteFromClerk = internalMutation({
 
 export async function getCurrentUserOrThrow(ctx: QueryCtx) {
   const userRecord = await getCurrentUser(ctx);
-  if (!userRecord) throw new Error("Can't get current user");
+  if (!userRecord) throw new ConvexError({ message: "You must be signed in." });
   return userRecord;
+}
+
+export async function getOrCreateCurrentUser(ctx: MutationCtx) {
+  const identity = await ctx.auth.getUserIdentity();
+  if (identity === null) {
+    throw new ConvexError({ message: "You must be signed in." });
+  }
+
+  const existingUser = await userByExternalId(ctx, identity.tokenIdentifier);
+  if (existingUser) return existingUser;
+
+  const username =
+    identity.preferredUsername ??
+    identity.nickname ??
+    identity.email ??
+    identity.name ??
+    identity.subject;
+
+  const userId = await ctx.db.insert("users", {
+    username,
+    externalId: identity.tokenIdentifier,
+  });
+
+  const user = await ctx.db.get(userId);
+  if (!user) throw new ConvexError({ message: "Unable to create user." });
+  return user;
 }
 
 export async function getCurrentUser(ctx: QueryCtx) {
