@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "../styles/CreateDropdown.css";
 import CreateCommunityModal from "./CreateCommunityModal";
 
@@ -12,18 +12,12 @@ interface CreateDropdownProps {
 const CreateDropdown = ({ isOpen, onClose }: CreateDropdownProps) => {
   const [isCommunityModalOpen, setIsCommunityModalOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
-  const subredditMatch = location.pathname.match(/^\/r\/([^/]+)/);
-  const currentSubreddit = subredditMatch ? subredditMatch[1] : null;
+  const subredditMatch = location.pathname.match(/^\/r\/([^/]+)(?:\/|$)/);
+  const currentSubreddit = subredditMatch
+    ? decodeURIComponent(subredditMatch[1])
+    : null;
 
   if (!isOpen) return null;
-
-  const handleCreatePost = () => {
-    if (currentSubreddit) {
-      navigate(`/r/${currentSubreddit}/submit`);
-      onClose();
-    }
-  };
 
   const handleCreateCommunity = () => {
     setIsCommunityModalOpen(true);
@@ -36,10 +30,10 @@ const CreateDropdown = ({ isOpen, onClose }: CreateDropdownProps) => {
         <div className="dropdown-header">Create</div>
         <div className="dropdown-options">
           {currentSubreddit && (
-            <button
-              type="button"
+            <Link
               className="dropdown-option"
-              onClick={handleCreatePost}
+              to={`/r/${encodeURIComponent(currentSubreddit)}/submit`}
+              onClick={onClose}
             >
               <div className="option-icon">
                 <FaPlus />
@@ -50,7 +44,7 @@ const CreateDropdown = ({ isOpen, onClose }: CreateDropdownProps) => {
                   Share to r/{currentSubreddit}
                 </span>
               </div>
-            </button>
+            </Link>
           )}
 
           <button
