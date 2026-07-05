@@ -26,5 +26,9 @@ export default defineSchema({
     image: v.optional(v.id("_storage")),
   })
     .index("by_authorId", ["authorId"])
-    .index("by_subredditId", ["subredditId"]),
+    .index("by_subredditId", ["subredditId"])
+    .searchIndex("search_title", {
+      searchField: "title",
+      filterFields: ["subredditId"],
+    }),
 });
