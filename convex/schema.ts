@@ -18,4 +18,13 @@ export default defineSchema({
     .searchIndex("search_name", {
       searchField: "name",
     }),
+  posts: defineTable({
+    title: v.string(),
+    body: v.optional(v.string()),
+    authorId: v.id("users"),
+    subredditId: v.id("subreddits"),
+    image: v.optional(v.id("_storage")),
+  })
+    .index("by_authorId", ["authorId"])
+    .index("by_subredditId", ["subredditId"]),
 });
