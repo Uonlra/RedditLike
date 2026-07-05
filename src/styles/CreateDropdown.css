@@ -85,3 +85,9 @@
   line-height: 16px;
   color: #878a8c;
 }
+
+.dropdown-option {
+  color: inherit;
+  text-decoration: none;
+}
+
