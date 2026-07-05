@@ -10,6 +10,7 @@
 
 import type * as authConstants from "../authConstants.js";
 import type * as http from "../http.js";
+import type * as image from "../image.js";
 import type * as messages from "../messages.js";
 import type * as posts from "../posts.js";
 import type * as subreddit from "../subreddit.js";
@@ -24,6 +25,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   authConstants: typeof authConstants;
   http: typeof http;
+  image: typeof image;
   messages: typeof messages;
   posts: typeof posts;
   subreddit: typeof subreddit;
