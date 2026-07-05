@@ -202,3 +202,10 @@
   color: #878a8c;
   margin: 0;
 }
+
+.submit-error {
+  color: #d93a00;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
