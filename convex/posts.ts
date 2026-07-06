@@ -5,10 +5,13 @@ import type { QueryCtx } from "./_generated/server";
 import type { Doc, Id } from "./_generated/dataModel";
 import { getOrCreateCurrentUser } from "./users";
 
+const COMMENT_COUNT_LIMIT = 1000;
+
 type EnrichedPost = Doc<"posts"> & {
   author: { username: string } | null;
   subreddit: { _id: Id<"subreddits">; name: string } | null;
   imageUrl: string | null;
+  commentCount: number;
 };
 
 const ERROR_MESSAGES = {
@@ -18,14 +21,24 @@ const ERROR_MESSAGES = {
   USER_NOT_FOUND: "User not found",
 } as const;
 
+async function getCommentCount(ctx: QueryCtx, postId: Id<"posts">) {
+  const comments = await ctx.db
+    .query("comments")
+    .withIndex("by_postId", (q) => q.eq("postId", postId))
+    .take(COMMENT_COUNT_LIMIT);
+
+  return comments.length;
+}
+
 async function getEnrichedPost(
   ctx: QueryCtx,
   post: Doc<"posts">,
 ): Promise<EnrichedPost> {
-  const [author, subreddit, imageUrl] = await Promise.all([
+  const [author, subreddit, imageUrl, commentCount] = await Promise.all([
     ctx.db.get(post.authorId),
     ctx.db.get(post.subredditId),
     post.image ? ctx.storage.getUrl(post.image) : Promise.resolve(null),
+    getCommentCount(ctx, post._id),
   ]);
 
   return {
@@ -33,6 +46,7 @@ async function getEnrichedPost(
     author: author ? { username: author.username } : null,
     subreddit: subreddit ? { _id: subreddit._id, name: subreddit.name } : null,
     imageUrl,
+    commentCount,
   };
 }
 

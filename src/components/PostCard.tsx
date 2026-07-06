@@ -1,15 +1,22 @@
 import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
+import type { FormEvent } from "react";
 import { FaRegCommentAlt, FaTrash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../../convex/_generated/api";
 import type { Doc, Id } from "../../convex/_generated/dataModel";
 import "../styles/PostCard.css";
+import Comment from "./Comments";
 
 type EnrichedPost = Doc<"posts"> & {
   author: { username: string } | null;
   subreddit: { _id: Id<"subreddits">; name: string } | null;
   imageUrl: string | null;
+  commentCount: number;
+};
+
+type EnrichedComment = Doc<"comments"> & {
+  author: { username: string } | null;
 };
 
 interface PostCardProps {
@@ -30,6 +37,13 @@ interface PostContentProps {
   body?: string;
   imageUrl?: string | null;
   expandedView: boolean;
+}
+
+interface CommentSectionProps {
+  comments: EnrichedComment[];
+  onSubmit: (content: string) => void;
+  signedIn: boolean;
+  isSubmitting: boolean;
 }
 
 const formatTimestamp = (creationTime: number) => {
@@ -93,6 +107,55 @@ const PostContent = ({
   );
 };
 
+const CommentSection = ({
+  comments,
+  onSubmit,
+  signedIn,
+  isSubmitting,
+}: CommentSectionProps) => {
+  const [newComment, setNewComment] = useState("");
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const content = newComment.trim();
+    if (!content) return;
+
+    onSubmit(content);
+    setNewComment("");
+  };
+
+  return (
+    <div className="comments-section">
+      {signedIn ? (
+        <form className="comment-form" onSubmit={handleSubmit}>
+          <textarea
+            value={newComment}
+            onChange={(event) => setNewComment(event.target.value)}
+            placeholder="写下你的评论"
+            className="comment-input"
+            disabled={isSubmitting}
+          />
+          <button
+            type="submit"
+            className="comment-submit"
+            disabled={isSubmitting || !newComment.trim()}
+          >
+            {isSubmitting ? "Commenting..." : "Comment"}
+          </button>
+        </form>
+      ) : (
+        <p className="comment-login-hint">Sign in to leave a comment.</p>
+      )}
+
+      <div className="comments-list">
+        {comments.map((comment) => (
+          <Comment key={comment._id} comment={comment} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const PostCard = ({
   post,
   showSubreddit = false,
@@ -101,18 +164,41 @@ const PostCard = ({
   const navigate = useNavigate();
   const currentUser = useQuery(api.users.current);
   const deletePost = useMutation(api.posts.deletePost);
+  const createComment = useMutation(api.comments.create);
+  const comments = useQuery(api.comments.getPostComments, { postId: post._id });
   const [deleteError, setDeleteError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showComments, setShowComments] = useState(expandedView);
+  const [commentError, setCommentError] = useState("");
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const ownedByCurrentUser = currentUser?._id === post.authorId;
 
   const handleOpenComments = () => {
     if (!expandedView) {
       navigate(`/post/${post._id}`);
+      return;
+    }
+
+    setShowComments((isVisible) => !isVisible);
+  };
+
+  const handleSubmitComment = async (content: string) => {
+    setCommentError("");
+    setIsSubmittingComment(true);
+
+    try {
+      await createComment({ postId: post._id, body: content });
+    } catch (err) {
+      setCommentError(
+        err instanceof Error ? err.message : "Failed to create comment.",
+      );
+    } finally {
+      setIsSubmittingComment(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you would like to delete this?")) return;
+    if (!window.confirm("确认删除？")) return;
 
     setDeleteError("");
     setIsDeleting(true);
@@ -150,7 +236,7 @@ const PostCard = ({
         <div className="post-actions">
           <button type="button" className="action-button" onClick={handleOpenComments}>
             <FaRegCommentAlt />
-            <span>Comments</span>
+            <span>{post.commentCount} {post.commentCount === 1 ? "Comment" : "Comments"}</span>
           </button>
           {ownedByCurrentUser && (
             <button
@@ -165,9 +251,21 @@ const PostCard = ({
             </button>
           )}
         </div>
+
+        {commentError && <div className="post-error">{commentError}</div>}
+        {(showComments || expandedView) && (
+          <CommentSection
+            comments={comments ?? []}
+            onSubmit={handleSubmitComment}
+            signedIn={currentUser !== null && currentUser !== undefined}
+            isSubmitting={isSubmittingComment}
+          />
+        )}
       </div>
     </article>
   );
 };
 
 export default PostCard;
+
+
