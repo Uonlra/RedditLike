@@ -55,6 +55,7 @@ const SubredditPage = () => {
 
   const description = subreddit.description?.trim() || "No description yet.";
   const createdDate = formatCreatedDate(subreddit._creationTime);
+  const postCountLabel = `${subreddit.postCount} ${subreddit.postCount === 1 ? "post" : "posts"}`;
 
   return (
     <div className="subreddit-page">
@@ -62,6 +63,7 @@ const SubredditPage = () => {
         <div className="subreddit-avatar">r/</div>
         <div className="subreddit-title-block">
           <h1>r/{subreddit.name}</h1>
+          <div className="subreddit-hero-meta">{postCountLabel}</div>
           <p>{description}</p>
         </div>
       </section>
@@ -93,6 +95,10 @@ const SubredditPage = () => {
             <div>
               <dt>Created</dt>
               <dd>{createdDate}</dd>
+            </div>
+            <div>
+              <dt>Posts</dt>
+              <dd>{postCountLabel}</dd>
             </div>
             <div>
               <dt>Community</dt>

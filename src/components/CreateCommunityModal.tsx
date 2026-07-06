@@ -79,7 +79,7 @@ const CreateCommunityModal = ({
                             id="name"
                             value={name}
                             onChange={(event) => setName(event.target.value)}
-                            placeholder="community_name"
+                            placeholder="社区名称"
                             maxLength={21}
                             disabled={isLoading}
                         />
@@ -95,7 +95,7 @@ const CreateCommunityModal = ({
                             id="description"
                             value={description}
                             onChange={(event) => setDescription(event.target.value)}
-                            placeholder="Tell us about your community"
+                            placeholder="社区描述 (可选)"
                             maxLength={100}
                             disabled={isLoading}
                         />
