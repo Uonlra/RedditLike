@@ -235,3 +235,27 @@
     font-size: 22px;
   }
 }
+
+.subreddit-post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+}
+
+.subreddit-load-more {
+  display: block;
+  margin: 12px auto;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background: #0079d3;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.subreddit-load-more:hover {
+  background: #006dbf;
+}
+

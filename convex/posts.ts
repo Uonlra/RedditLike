@@ -120,7 +120,11 @@ export const userPosts = query({
       .unique();
 
     if (!user) {
-      throw new ConvexError({ message: ERROR_MESSAGES.USER_NOT_FOUND });
+      return {
+        page: [],
+        isDone: true,
+        continueCursor: "",
+      };
     }
 
     const posts = await ctx.db

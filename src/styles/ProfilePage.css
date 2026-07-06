@@ -45,3 +45,19 @@
   color: #666;
   margin-top: 16px;
 }
+
+.load-more {
+  align-self: center;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background: #0079d3;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.load-more:hover {
+  background: #006dbf;
+}
+

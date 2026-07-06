@@ -1,6 +1,7 @@
-import { useQuery } from "convex/react";
+import { usePaginatedQuery, useQuery } from "convex/react";
 import { Link, useParams } from "react-router-dom";
 import { api } from "../../convex/_generated/api";
+import PostCard from "../components/PostCard";
 import "../styles/SubredditPage.css";
 
 const formatCreatedDate = (timestamp: number) => {
@@ -16,6 +17,15 @@ const SubredditPage = () => {
   const subreddit = useQuery(
     api.subreddit.get,
     subredditName ? { name: subredditName } : "skip",
+  );
+  const {
+    results: posts,
+    loadMore,
+    status,
+  } = usePaginatedQuery(
+    api.posts.getSubredditPosts,
+    subreddit ? { subredditName: subreddit.name } : "skip",
+    { initialNumItems: 20 },
   );
 
   if (subreddit === undefined) {
@@ -58,9 +68,22 @@ const SubredditPage = () => {
 
       <div className="subreddit-layout">
         <main className="subreddit-posts" aria-label={`Posts in r/${subreddit.name}`}>
-          <div className="subreddit-posts-empty">
-            <p>No posts yet. Be the first to post.</p>
-          </div>
+          {posts.length === 0 ? (
+            <div className="subreddit-posts-empty">
+              <p>No posts yet. Be the first to post.</p>
+            </div>
+          ) : (
+            <div className="subreddit-post-list">
+              {posts.map((post) => (
+                <PostCard key={post._id} post={post} />
+              ))}
+            </div>
+          )}
+          {status === "CanLoadMore" && (
+            <button className="subreddit-load-more" onClick={() => loadMore(20)}>
+              Load More
+            </button>
+          )}
         </main>
 
         <aside className="subreddit-about" aria-label="Community information">
