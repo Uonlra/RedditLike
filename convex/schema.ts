@@ -31,4 +31,11 @@ export default defineSchema({
       searchField: "title",
       filterFields: ["subredditId"],
     }),
+  comments: defineTable({
+    body: v.string(),
+    authorId: v.id("users"),
+    postId: v.id("posts"),
+  })
+    .index("by_authorId", ["authorId"])
+    .index("by_postId", ["postId"]),
 });

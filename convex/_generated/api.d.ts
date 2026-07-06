@@ -9,6 +9,7 @@
  */
 
 import type * as authConstants from "../authConstants.js";
+import type * as comments from "../comments.js";
 import type * as http from "../http.js";
 import type * as image from "../image.js";
 import type * as messages from "../messages.js";
@@ -24,6 +25,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   authConstants: typeof authConstants;
+  comments: typeof comments;
   http: typeof http;
   image: typeof image;
   messages: typeof messages;

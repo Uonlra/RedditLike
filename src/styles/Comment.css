@@ -1,26 +1,27 @@
 .comment {
-  padding: 8px;
+  padding: 10px 12px;
+  border: 1px solid #edeff1;
   border-radius: 4px;
-  margin-bottom: 4px;
   background-color: #ffffff;
-  border: 1px solid #eee;
 }
 
 .comment:hover {
-  border-color: #ccc;
+  border-color: #d7dadc;
 }
 
 .comment-header {
   display: flex;
   align-items: center;
-  margin-bottom: 4px;
-  font-size: 12px;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 6px;
   color: #787c7e;
+  font-size: 12px;
 }
 
 .comment-author {
-  font-weight: 500;
   color: #1a1a1b;
+  font-weight: 600;
   text-decoration: none;
 }
 
@@ -30,20 +31,19 @@
 }
 
 .comment-dot {
-  margin: 0 4px;
   color: #787c7e;
 }
 
 .comment-timestamp {
   color: #787c7e;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .comment-content {
-  font-size: 14px;
-  line-height: 1.4;
+  margin: 0;
   color: #1a1a1b;
+  font-size: 14px;
+  line-height: 1.5;
   white-space: pre-wrap;
-  word-break: break-word;
-  margin-left: 0;
+  overflow-wrap: anywhere;
 }

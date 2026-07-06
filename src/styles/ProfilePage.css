@@ -1,5 +1,5 @@
 .content-container {
-  max-width: 740px;
+  max-width: 1320px;
   margin: 0 auto;
   padding: 20px;
   padding-top: 69px;
@@ -45,3 +45,20 @@
   color: #666;
   margin-top: 16px;
 }
+
+.load-more {
+  align-self: center;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background: #0079d3;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.load-more:hover {
+  background: #006dbf;
+}
+
+

@@ -131,7 +131,7 @@ const SubmitPage = () => {
         <form className="submit-form" onSubmit={handleSubmit}>
           <input
             type="text"
-            placeholder="Title"
+            placeholder="标题"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             className="submit-title"
@@ -167,7 +167,7 @@ const SubmitPage = () => {
           </div>
 
           <textarea
-            placeholder="Text (optional)"
+            placeholder="文本内容 (可选)"
             value={body}
             onChange={(event) => setBody(event.target.value)}
             className="submit-body"

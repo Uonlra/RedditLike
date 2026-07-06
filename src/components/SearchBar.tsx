@@ -25,7 +25,7 @@ const SearchBar = () => {
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search Reddit"
+          placeholder="搜索帖子"
           aria-label="Search Reddit"
         />
       </div>

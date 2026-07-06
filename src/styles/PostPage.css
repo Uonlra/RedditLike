@@ -1,26 +1,38 @@
+.post-page {
+  padding-top: 69px;
+}
 
 .post-page .container {
-  max-width: 1000px;
+  max-width: 1320px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
 .post-page.loading {
   display: flex;
-  justify-content: center;
   align-items: center;
-  font-size: 18px;
+  justify-content: center;
+  min-height: 240px;
   color: #1a1a1b;
+  font-size: 18px;
+}
+
+.page-header {
+  margin-bottom: 10px;
 }
 
 .back-link {
-  color: black;
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 10px
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #1a1a1b;
+  cursor: pointer;
+  font: inherit;
 }
 
 .back-link:hover {
-  color: grey;
+  color: #787c7e;
 }
