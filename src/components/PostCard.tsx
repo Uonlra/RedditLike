@@ -95,16 +95,32 @@ const PostContent = ({
 }: PostContentProps) => {
   const TitleTag = expandedView ? "h1" : "h2";
 
+  if (expandedView) {
+    return (
+      <>
+        <TitleTag className="post-title">{title}</TitleTag>
+        {imageUrl && (
+          <div className="post-image-container">
+            <img src={imageUrl} alt="Post content" className="post-image" />
+          </div>
+        )}
+        {body && <p className="post-body">{body}</p>}
+      </>
+    );
+  }
+
   return (
-    <>
-      <TitleTag className="post-title">{title}</TitleTag>
+    <div className="post-summary-row">
+      <div className="post-summary-text">
+        <TitleTag className="post-title">{title}</TitleTag>
+        {body && <p className="post-body">{body}</p>}
+      </div>
       {imageUrl && (
-        <div className={`post-image-container ${expandedView ? "" : "small-img"}`}>
-          <img src={imageUrl} alt="Post content" className="post-image" />
+        <div className="post-thumbnail-container">
+          <img src={imageUrl} alt="Post thumbnail" className="post-thumbnail" />
         </div>
       )}
-      {body && <p className="post-body">{body}</p>}
-    </>
+    </div>
   );
 };
 
@@ -218,7 +234,7 @@ const PostCard = ({
 
   return (
     <article className={`post-card ${expandedView ? "expanded" : ""}`}>
-      <div className="post-votes" aria-label="Votes placeholder">
+      <div className="post-votes" aria-label="Post rank">
         <span className="vote-count total-count">{rank ?? 0}</span>
       </div>
       <div className="post-content">
@@ -271,5 +287,3 @@ const PostCard = ({
 };
 
 export default PostCard;
-
-
