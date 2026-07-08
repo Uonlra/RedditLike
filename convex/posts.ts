@@ -18,7 +18,6 @@ const ERROR_MESSAGES = {
   POST_NOT_FOUND: "Post not found",
   SUBREDDIT_NOT_FOUND: "Subreddit not found",
   UNAUTHORIZED_DELETE: "You can't delete this post",
-  USER_NOT_FOUND: "User not found",
 } as const;
 
 async function getCommentCount(ctx: QueryCtx, postId: Id<"posts">) {

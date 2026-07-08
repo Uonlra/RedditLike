@@ -1,16 +1,9 @@
-import {components} from "./_generated/api"
-import { ShardedCounter } from "@convex-dev/sharded-counter"
-import {Id} from "./_generated/dataModel"
+import type { Id } from "./_generated/dataModel";
 
-export const counts = new ShardedCounter(
-    components.shardedCounter,
-    {defaultShards: 1}
-)
-
-export function commentCountKey(postId: Id<"post">){
-    return `comments:${postId}`
+export function commentCountKey(postId: Id<"posts">) {
+  return `comments:${postId}`;
 }
 
-export function postCountKey(userId: Id<"users">){
-    return `post:${userId}`
+export function postCountKey(subredditId: Id<"subreddits">) {
+  return `posts:${subredditId}`;
 }

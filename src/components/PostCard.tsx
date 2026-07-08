@@ -236,7 +236,9 @@ const PostCard = ({
         <div className="post-actions">
           <button type="button" className="action-button" onClick={handleOpenComments}>
             <FaRegCommentAlt />
-            <span>{post.commentCount} {post.commentCount === 1 ? "Comment" : "Comments"}</span>
+            <span>
+              {post.commentCount} {post.commentCount === 1 ? "Comment" : "Comments"}
+            </span>
           </button>
           {ownedByCurrentUser && (
             <button
@@ -267,5 +269,3 @@ const PostCard = ({
 };
 
 export default PostCard;
-
-
