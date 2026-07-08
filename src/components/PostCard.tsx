@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { FaRegCommentAlt, FaTrash } from "react-icons/fa";
+import { TbArrowBigDown, TbArrowBigUp } from "react-icons/tb";
 import { Link, useNavigate } from "react-router-dom";
 import { api } from "../../convex/_generated/api";
 import type { Doc, Id } from "../../convex/_generated/dataModel";
@@ -17,6 +18,12 @@ type EnrichedPost = Doc<"posts"> & {
 
 type EnrichedComment = Doc<"comments"> & {
   author: { username: string } | null;
+};
+
+type VoteCounts = {
+  total: number;
+  upvotes: number;
+  downvotes: number;
 };
 
 interface PostCardProps {
@@ -47,6 +54,15 @@ interface CommentSectionProps {
   isSubmitting: boolean;
 }
 
+interface VoteButtonsProps {
+  voteCounts: VoteCounts | undefined;
+  hasUpvoted: boolean | undefined;
+  hasDownvoted: boolean | undefined;
+  isVoting: boolean;
+  onUpvote: () => void;
+  onDownvote: () => void;
+}
+
 const formatTimestamp = (creationTime: number) => {
   return new Intl.DateTimeFormat("en", {
     month: "short",
@@ -55,6 +71,45 @@ const formatTimestamp = (creationTime: number) => {
     hour: "numeric",
     minute: "2-digit",
   }).format(new Date(creationTime));
+};
+
+const VoteButtons = ({
+  voteCounts,
+  hasUpvoted,
+  hasDownvoted,
+  isVoting,
+  onUpvote,
+  onDownvote,
+}: VoteButtonsProps) => {
+  const upvotes = voteCounts?.upvotes ?? 0;
+  const downvotes = voteCounts?.downvotes ?? 0;
+  const total = voteCounts?.total ?? 0;
+
+  return (
+    <div className="post-votes" aria-label="Post voting controls">
+      <span className="vote-count upvote-count">{upvotes}</span>
+      <button
+        type="button"
+        className={`vote-button upvote-button ${hasUpvoted ? "voted" : ""}`}
+        onClick={onUpvote}
+        disabled={isVoting}
+        aria-label={hasUpvoted ? "Remove upvote" : "Upvote post"}
+      >
+        <TbArrowBigUp aria-hidden="true" />
+      </button>
+      <span className="vote-count total-count">{total}</span>
+      <span className="vote-count downvote-count">{downvotes}</span>
+      <button
+        type="button"
+        className={`vote-button downvote-button ${hasDownvoted ? "voted" : ""}`}
+        onClick={onDownvote}
+        disabled={isVoting}
+        aria-label={hasDownvoted ? "Remove downvote" : "Downvote post"}
+      >
+        <TbArrowBigDown aria-hidden="true" />
+      </button>
+    </div>
+  );
 };
 
 const PostHeader = ({
@@ -177,18 +232,24 @@ const PostCard = ({
   post,
   showSubreddit = false,
   expandedView = false,
-  rank,
 }: PostCardProps) => {
   const navigate = useNavigate();
   const currentUser = useQuery(api.users.current);
   const deletePost = useMutation(api.posts.deletePost);
   const createComment = useMutation(api.comments.create);
+  const toggleUpvote = useMutation(api.vote.toggleUpvote);
+  const toggleDownvote = useMutation(api.vote.toggleDownvote);
   const comments = useQuery(api.comments.getPostComments, { postId: post._id });
+  const voteCounts = useQuery(api.vote.getVoteCounts, { postId: post._id });
+  const hasUpvoted = useQuery(api.vote.hasUpvoted, { postId: post._id });
+  const hasDownvoted = useQuery(api.vote.hasDownvoted, { postId: post._id });
   const [deleteError, setDeleteError] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [showComments, setShowComments] = useState(expandedView);
   const [commentError, setCommentError] = useState("");
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [voteError, setVoteError] = useState("");
+  const [isVoting, setIsVoting] = useState(false);
   const ownedByCurrentUser = currentUser?._id === post.authorId;
 
   const handleOpenComments = () => {
@@ -198,6 +259,23 @@ const PostCard = ({
     }
 
     setShowComments((isVisible) => !isVisible);
+  };
+
+  const handleVote = async (voteType: "upvote" | "downvote") => {
+    setVoteError("");
+    setIsVoting(true);
+
+    try {
+      if (voteType === "upvote") {
+        await toggleUpvote({ postId: post._id });
+      } else {
+        await toggleDownvote({ postId: post._id });
+      }
+    } catch (err) {
+      setVoteError(err instanceof Error ? err.message : "Failed to vote.");
+    } finally {
+      setIsVoting(false);
+    }
   };
 
   const handleSubmitComment = async (content: string) => {
@@ -234,9 +312,14 @@ const PostCard = ({
 
   return (
     <article className={`post-card ${expandedView ? "expanded" : ""}`}>
-      <div className="post-votes" aria-label="Post rank">
-        <span className="vote-count total-count">{rank ?? 0}</span>
-      </div>
+      <VoteButtons
+        voteCounts={voteCounts}
+        hasUpvoted={hasUpvoted}
+        hasDownvoted={hasDownvoted}
+        isVoting={isVoting}
+        onUpvote={() => handleVote("upvote")}
+        onDownvote={() => handleVote("downvote")}
+      />
       <div className="post-content">
         <PostHeader
           author={post.author}
@@ -250,7 +333,9 @@ const PostCard = ({
           imageUrl={post.imageUrl}
           expandedView={expandedView}
         />
-        {deleteError && <div className="post-error">{deleteError}</div>}
+        {(deleteError || voteError) && (
+          <div className="post-error">{deleteError || voteError}</div>
+        )}
         <div className="post-actions">
           <button type="button" className="action-button" onClick={handleOpenComments}>
             <FaRegCommentAlt />
