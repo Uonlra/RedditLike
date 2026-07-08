@@ -23,6 +23,7 @@ interface PostCardProps {
   post: EnrichedPost;
   showSubreddit?: boolean;
   expandedView?: boolean;
+  rank?: number;
 }
 
 interface PostHeaderProps {
@@ -94,16 +95,32 @@ const PostContent = ({
 }: PostContentProps) => {
   const TitleTag = expandedView ? "h1" : "h2";
 
+  if (expandedView) {
+    return (
+      <>
+        <TitleTag className="post-title">{title}</TitleTag>
+        {imageUrl && (
+          <div className="post-image-container">
+            <img src={imageUrl} alt="Post content" className="post-image" />
+          </div>
+        )}
+        {body && <p className="post-body">{body}</p>}
+      </>
+    );
+  }
+
   return (
-    <>
-      <TitleTag className="post-title">{title}</TitleTag>
+    <div className="post-summary-row">
+      <div className="post-summary-text">
+        <TitleTag className="post-title">{title}</TitleTag>
+        {body && <p className="post-body">{body}</p>}
+      </div>
       {imageUrl && (
-        <div className={`post-image-container ${expandedView ? "" : "small-img"}`}>
-          <img src={imageUrl} alt="Post content" className="post-image" />
+        <div className="post-thumbnail-container">
+          <img src={imageUrl} alt="Post thumbnail" className="post-thumbnail" />
         </div>
       )}
-      {body && <p className="post-body">{body}</p>}
-    </>
+    </div>
   );
 };
 
@@ -160,6 +177,7 @@ const PostCard = ({
   post,
   showSubreddit = false,
   expandedView = false,
+  rank,
 }: PostCardProps) => {
   const navigate = useNavigate();
   const currentUser = useQuery(api.users.current);
@@ -216,8 +234,8 @@ const PostCard = ({
 
   return (
     <article className={`post-card ${expandedView ? "expanded" : ""}`}>
-      <div className="post-votes" aria-label="Votes placeholder">
-        <span className="vote-count total-count">0</span>
+      <div className="post-votes" aria-label="Post rank">
+        <span className="vote-count total-count">{rank ?? 0}</span>
       </div>
       <div className="post-content">
         <PostHeader
@@ -236,7 +254,9 @@ const PostCard = ({
         <div className="post-actions">
           <button type="button" className="action-button" onClick={handleOpenComments}>
             <FaRegCommentAlt />
-            <span>{post.commentCount} {post.commentCount === 1 ? "Comment" : "Comments"}</span>
+            <span>
+              {post.commentCount} {post.commentCount === 1 ? "Comment" : "Comments"}
+            </span>
           </button>
           {ownedByCurrentUser && (
             <button
@@ -267,5 +287,3 @@ const PostCard = ({
 };
 
 export default PostCard;
-
-

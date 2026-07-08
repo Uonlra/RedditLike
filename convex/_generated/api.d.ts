@@ -10,6 +10,7 @@
 
 import type * as authConstants from "../authConstants.js";
 import type * as comments from "../comments.js";
+import type * as counter from "../counter.js";
 import type * as http from "../http.js";
 import type * as image from "../image.js";
 import type * as messages from "../messages.js";
@@ -26,6 +27,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   authConstants: typeof authConstants;
   comments: typeof comments;
+  counter: typeof counter;
   http: typeof http;
   image: typeof image;
   messages: typeof messages;
@@ -60,4 +62,6 @@ export declare const internal: FilterApi<
   FunctionReference<any, "internal">
 >;
 
-export declare const components: {};
+export declare const components: {
+  shardedCounter: import("@convex-dev/sharded-counter/_generated/component.js").ComponentApi<"shardedCounter">;
+};
