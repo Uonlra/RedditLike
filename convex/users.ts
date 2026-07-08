@@ -5,6 +5,8 @@ import { ConvexError, v } from "convex/values";
 import type { Validator } from "convex/values";
 import { clerkTokenIdentifier } from "./authConstants";
 
+const USER_POST_COUNT_LIMIT = 1000;
+
 export const current = query({
   args: {},
   handler: async (ctx) => {
@@ -104,3 +106,25 @@ async function userByExternalId(ctx: QueryCtx | MutationCtx, externalId: string)
     .withIndex("by_externalId", (q) => q.eq("externalId", externalId))
     .unique();
 }
+
+export const getPublicUser = query({
+  args: { username: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_username", (q) => q.eq("username", args.username))
+      .unique();
+
+    if (!user) return null;
+
+    const posts = await ctx.db
+      .query("posts")
+      .withIndex("by_authorId", (q) => q.eq("authorId", user._id))
+      .take(USER_POST_COUNT_LIMIT);
+
+    return {
+      username: user.username,
+      posts: posts.length,
+    };
+  },
+});
