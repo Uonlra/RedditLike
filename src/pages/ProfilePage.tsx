@@ -46,8 +46,8 @@ const ProfilePage = () => {
             <p>No posts yet</p>
           </div>
         ) : (
-          posts.map((post, index) => (
-            <PostCard key={post._id} post={post} showSubreddit rank={index + 1} />
+          posts.map((post) => (
+            <PostCard key={post._id} post={post} showSubreddit />
           ))
         )}
         {status === "CanLoadMore" && (
@@ -61,4 +61,5 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+
 

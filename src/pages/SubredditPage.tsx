@@ -76,8 +76,8 @@ const SubredditPage = () => {
             </div>
           ) : (
             <div className="subreddit-post-list">
-              {posts.map((post, index) => (
-                <PostCard key={post._id} post={post} showSubreddit rank={index + 1} />
+              {posts.map((post) => (
+                <PostCard key={post._id} post={post} showSubreddit />
               ))}
             </div>
           )}
@@ -115,5 +115,6 @@ const SubredditPage = () => {
 };
 
 export default SubredditPage;
+
 
 
