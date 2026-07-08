@@ -30,7 +30,6 @@ interface PostCardProps {
   post: EnrichedPost;
   showSubreddit?: boolean;
   expandedView?: boolean;
-  rank?: number;
 }
 
 interface PostHeaderProps {
@@ -372,3 +371,4 @@ const PostCard = ({
 };
 
 export default PostCard;
+
