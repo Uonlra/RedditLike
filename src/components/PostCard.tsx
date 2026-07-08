@@ -23,6 +23,7 @@ interface PostCardProps {
   post: EnrichedPost;
   showSubreddit?: boolean;
   expandedView?: boolean;
+  rank?: number;
 }
 
 interface PostHeaderProps {
@@ -160,6 +161,7 @@ const PostCard = ({
   post,
   showSubreddit = false,
   expandedView = false,
+  rank,
 }: PostCardProps) => {
   const navigate = useNavigate();
   const currentUser = useQuery(api.users.current);
@@ -217,7 +219,7 @@ const PostCard = ({
   return (
     <article className={`post-card ${expandedView ? "expanded" : ""}`}>
       <div className="post-votes" aria-label="Votes placeholder">
-        <span className="vote-count total-count">0</span>
+        <span className="vote-count total-count">{rank ?? 0}</span>
       </div>
       <div className="post-content">
         <PostHeader
@@ -269,3 +271,5 @@ const PostCard = ({
 };
 
 export default PostCard;
+
+
