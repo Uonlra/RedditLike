@@ -17,6 +17,7 @@ import type * as messages from "../messages.js";
 import type * as posts from "../posts.js";
 import type * as subreddit from "../subreddit.js";
 import type * as users from "../users.js";
+import type * as vote from "../vote.js";
 
 import type {
   ApiFromModules,
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   posts: typeof posts;
   subreddit: typeof subreddit;
   users: typeof users;
+  vote: typeof vote;
 }>;
 
 /**
