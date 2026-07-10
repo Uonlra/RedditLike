@@ -1,11 +1,11 @@
+import { Feed } from "../components/Feed";
 
+const HomePage = () => {
+  return (
+    <div className="home-page">
+      <Feed />
+    </div>
+  );
+};
 
-const HomePage= () => {
-    return (
-        <div>
-            HomePage
-        </div>
-    )
-}
-
-export default HomePage
+export default HomePage;
