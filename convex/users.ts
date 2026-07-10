@@ -62,14 +62,14 @@ export const deleteFromClerk = internalMutation({
 
 export async function getCurrentUserOrThrow(ctx: QueryCtx) {
   const userRecord = await getCurrentUser(ctx);
-  if (!userRecord) throw new ConvexError({ message: "You must be signed in." });
+  if (!userRecord) throw new ConvexError({ message: "请先登录。" });
   return userRecord;
 }
 
 export async function getOrCreateCurrentUser(ctx: MutationCtx) {
   const identity = await ctx.auth.getUserIdentity();
   if (identity === null) {
-    throw new ConvexError({ message: "You must be signed in." });
+    throw new ConvexError({ message: "请先登录。" });
   }
 
   const existingUser = await userByExternalId(ctx, identity.tokenIdentifier);
@@ -88,7 +88,7 @@ export async function getOrCreateCurrentUser(ctx: MutationCtx) {
   });
 
   const user = await ctx.db.get(userId);
-  if (!user) throw new ConvexError({ message: "Unable to create user." });
+  if (!user) throw new ConvexError({ message: "无法创建用户，请稍后重试。" });
   return user;
 }
 

@@ -93,7 +93,7 @@ const SearchBar = () => {
   };
 
   const getLabelForType = (type: string) => {
-    return type === "post" ? "Post" : "Community";
+    return type === "post" ? "帖子" : "社区";
   };
 
   return (
@@ -105,14 +105,14 @@ const SearchBar = () => {
           className="search-input"
           placeholder={
             currentSubreddit
-              ? `Search posts in r/${currentSubreddit}`
-              : "Search communities"
+              ? `在 r/${currentSubreddit} 中搜索帖子`
+              : "搜索社区"
           }
           value={searchQuery}
           onChange={handleSearch}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          aria-label="Search RedditLike"
+          aria-label="搜索 RedditLike"
           autoComplete="off"
         />
         {currentSubreddit && (
@@ -128,13 +128,13 @@ const SearchBar = () => {
             <div className="empty-state">
               <p>
                 {currentSubreddit
-                  ? "Search posts in this community."
-                  : "Search for communities."}
+                  ? "搜索当前社区中的帖子。"
+                  : "搜索社区。"}
               </p>
             </div>
           ) : isLoading ? (
             <div className="empty-state">
-              <p>Searching...</p>
+              <p>搜索中...</p>
             </div>
           ) : results && results.length > 0 ? (
             <ul className="results-list">
@@ -159,7 +159,7 @@ const SearchBar = () => {
             </ul>
           ) : (
             <div className="empty-state">
-              <p>No results found.</p>
+              <p>没有找到结果。</p>
             </div>
           )}
         </div>

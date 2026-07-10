@@ -15,9 +15,9 @@ type EnrichedPost = Doc<"posts"> & {
 };
 
 const ERROR_MESSAGES = {
-  POST_NOT_FOUND: "Post not found",
-  SUBREDDIT_NOT_FOUND: "Subreddit not found",
-  UNAUTHORIZED_DELETE: "You can't delete this post",
+  POST_NOT_FOUND: "未找到帖子。",
+  SUBREDDIT_NOT_FOUND: "未找到社区。",
+  UNAUTHORIZED_DELETE: "你不能删除这篇帖子。",
 } as const;
 
 async function getCommentCount(ctx: QueryCtx, postId: Id<"posts">) {

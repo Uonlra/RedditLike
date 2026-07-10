@@ -14,7 +14,6 @@ import type * as counter from "../counter.js";
 import type * as http from "../http.js";
 import type * as image from "../image.js";
 import type * as leaderboard from "../leaderboard.js";
-import type * as messages from "../messages.js";
 import type * as posts from "../posts.js";
 import type * as subreddit from "../subreddit.js";
 import type * as users from "../users.js";
@@ -33,7 +32,6 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   image: typeof image;
   leaderboard: typeof leaderboard;
-  messages: typeof messages;
   posts: typeof posts;
   subreddit: typeof subreddit;
   users: typeof users;

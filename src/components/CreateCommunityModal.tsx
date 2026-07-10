@@ -28,17 +28,17 @@ const CreateCommunityModal = ({
         const communityDescription = description.trim();
 
         if (!communityName) {
-            setError("Community name is required.");
+            setError("请输入社区名称。");
             return;
         }
 
         if (communityName.length < 3 || communityName.length > 21) {
-            setError("Community name must be between 3 and 21 characters.");
+            setError("社区名称长度需为 3 到 21 个字符。");
             return;
         }
 
         if (!/^[a-zA-Z0-9_]+$/.test(communityName)) {
-            setError("Community name can only contain letters, numbers and underscores.");
+            setError("社区名称只能包含字母、数字和下划线。");
             return;
         }
 
@@ -53,7 +53,7 @@ const CreateCommunityModal = ({
             setError(
                 err instanceof Error
                     ? err.message
-                    : "An error occurred while creating the community.",
+                    : "创建社区时出错，请稍后重试。",
             );
         } finally {
             setIsLoading(false);
@@ -65,14 +65,14 @@ const CreateCommunityModal = ({
             <div className="modal-overlay" onClick={onClose} />
             <div className="modal-container">
                 <div className="modal-header">
-                    <h2>Create a Community</h2>
-                    <button type="button" className="close-button" onClick={onClose}>
+                    <h2>创建社区</h2>
+                    <button type="button" className="close-button" onClick={onClose} aria-label="关闭创建社区弹窗">
                         &times;
                     </button>
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="name">Name</label>
+                        <label htmlFor="name">名称</label>
                         <div className="input-prefix">r/</div>
                         <input
                             type="text"
@@ -84,18 +84,18 @@ const CreateCommunityModal = ({
                             disabled={isLoading}
                         />
                         <p className="input-help">
-                            Community names including capitalization cannot be changed.
+                            社区名称创建后无法修改，包括大小写。
                         </p>
                     </div>
                     <div className="form-group">
                         <label htmlFor="description">
-                            Description <span>(optional)</span>
+                            描述 <span>（可选）</span>
                         </label>
                         <textarea
                             id="description"
                             value={description}
                             onChange={(event) => setDescription(event.target.value)}
-                            placeholder="社区描述 (可选)"
+                            placeholder="社区描述（可选）"
                             maxLength={100}
                             disabled={isLoading}
                         />
@@ -109,14 +109,14 @@ const CreateCommunityModal = ({
                             onClick={onClose}
                             disabled={isLoading}
                         >
-                            Cancel
+                            取消
                         </button>
                         <button
                             type="submit"
                             className="create-button"
                             disabled={isLoading}
                         >
-                            {isLoading ? "Creating..." : "Create Community"}
+                            {isLoading ? "创建中..." : "创建社区"}
                         </button>
                     </div>
                 </form>

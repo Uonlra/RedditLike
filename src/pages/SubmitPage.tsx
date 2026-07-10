@@ -33,7 +33,7 @@ const SubmitPage = () => {
     if (!file) return;
 
     if (file.size > MAX_IMAGE_SIZE_BYTES) {
-      setError("Image size should be less than 5MB.");
+      setError("图片大小不能超过 5MB。");
       return;
     }
 
@@ -60,12 +60,12 @@ const SubmitPage = () => {
     const trimmedBody = body.trim();
 
     if (!trimmedTitle) {
-      setError("Please enter a title.");
+      setError("请输入标题。");
       return;
     }
 
     if (!subreddit) {
-      setError("Subreddit is still loading or does not exist.");
+      setError("社区仍在加载，或该社区不存在。");
       return;
     }
 
@@ -82,7 +82,7 @@ const SubmitPage = () => {
         });
 
         if (!uploadResult.ok) {
-          throw new Error("Failed to upload image.");
+          throw new Error("图片上传失败。");
         }
 
         const uploadJson = (await uploadResult.json()) as { storageId: Id<"_storage"> };
@@ -97,7 +97,7 @@ const SubmitPage = () => {
       });
       navigate(`/post/${postId}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create post. Please try again.");
+      setError(err instanceof Error ? err.message : "创建帖子失败，请重试。");
     } finally {
       setIsSubmitting(false);
     }
@@ -107,7 +107,7 @@ const SubmitPage = () => {
     return (
       <div className="content-container">
         <div className="submit-container">
-          <h1>Loading...</h1>
+          <h1>加载中...</h1>
         </div>
       </div>
     );
@@ -117,8 +117,8 @@ const SubmitPage = () => {
     return (
       <div className="content-container">
         <div className="not-found">
-          <h1>Subreddit not found</h1>
-          <p>The subreddit r/{subredditName} does not exist.</p>
+          <h1>未找到社区</h1>
+          <p>社区 r/{subredditName} 不存在。</p>
         </div>
       </div>
     );
@@ -127,7 +127,7 @@ const SubmitPage = () => {
   return (
     <div className="content-container">
       <div className="submit-container">
-        <h1>Create a post in r/{subreddit.name}</h1>
+        <h1>在 r/{subreddit.name} 发布帖子</h1>
         <form className="submit-form" onSubmit={handleSubmit}>
           <input
             type="text"
@@ -142,7 +142,7 @@ const SubmitPage = () => {
           <div className="media-input-container">
             <label className="image-upload-label">
               <FaImage className="image-icon" />
-              Upload Image
+              上传图片
               <input
                 type="file"
                 accept="image/*"
@@ -153,10 +153,10 @@ const SubmitPage = () => {
             </label>
             {imagePreview && (
               <div className="image-preview-container">
-                <img src={imagePreview} alt="Preview" className="image-preview" />
+                <img src={imagePreview} alt="图片预览" className="image-preview" />
                 <button
                   type="button"
-                  className="remove-image-button"
+                  className="remove-image-button" aria-label="移除图片"
                   onClick={handleRemoveImage}
                   disabled={isSubmitting}
                 >
@@ -167,7 +167,7 @@ const SubmitPage = () => {
           </div>
 
           <textarea
-            placeholder="文本内容 (可选)"
+            placeholder="文本内容（可选）"
             value={body}
             onChange={(event) => setBody(event.target.value)}
             className="submit-body"
@@ -181,14 +181,14 @@ const SubmitPage = () => {
               className="back-button"
               disabled={isSubmitting}
             >
-              Cancel
+              取消
             </button>
             <button
               type="submit"
               className="submit-button"
               disabled={isSubmitting || !title.trim()}
             >
-              {isSubmitting ? "Posting..." : "Post"}
+              {isSubmitting ? "发布中..." : "发布"}
             </button>
           </div>
         </form>
