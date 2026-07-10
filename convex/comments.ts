@@ -10,12 +10,12 @@ export const create = mutation({
   handler: async (ctx, args) => {
     const body = args.body.trim();
     if (!body) {
-      throw new ConvexError({ message: "Comment cannot be empty." });
+      throw new ConvexError({ message: "评论不能为空。" });
     }
 
     const post = await ctx.db.get(args.postId);
     if (!post) {
-      throw new ConvexError({ message: "Post not found." });
+      throw new ConvexError({ message: "未找到帖子。" });
     }
 
     const user = await getOrCreateCurrentUser(ctx);

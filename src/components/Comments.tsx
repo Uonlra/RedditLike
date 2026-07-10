@@ -20,11 +20,11 @@ const Comment = ({ comment }: CommentProps) => {
             u/{comment.author.username}
           </Link>
         ) : (
-          <span className="comment-author">u/deleted</span>
+          <span className="comment-author">u/已删除</span>
         )}
         <span className="comment-dot">-</span>
         <span className="comment-timestamp">
-          {new Date(comment._creationTime).toLocaleString()}
+          {new Date(comment._creationTime).toLocaleString("zh-CN")}
         </span>
       </div>
       <div className="comment-content">{comment.body}</div>

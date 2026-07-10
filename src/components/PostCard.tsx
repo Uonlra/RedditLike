@@ -63,7 +63,7 @@ interface VoteButtonsProps {
 }
 
 const formatTimestamp = (creationTime: number) => {
-  return new Intl.DateTimeFormat("en", {
+  return new Intl.DateTimeFormat("zh-CN", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -85,14 +85,14 @@ const VoteButtons = ({
   const total = voteCounts?.total ?? 0;
 
   return (
-    <div className="post-votes" aria-label="Post voting controls">
+    <div className="post-votes" aria-label="帖子投票控件">
       <span className="vote-count upvote-count">{upvotes}</span>
       <button
         type="button"
         className={`vote-button upvote-button ${hasUpvoted ? "voted" : ""}`}
         onClick={onUpvote}
         disabled={isVoting}
-        aria-label={hasUpvoted ? "Remove upvote" : "Upvote post"}
+        aria-label={hasUpvoted ? "取消赞同" : "赞同帖子"}
       >
         <TbArrowBigUp aria-hidden="true" />
       </button>
@@ -103,7 +103,7 @@ const VoteButtons = ({
         className={`vote-button downvote-button ${hasDownvoted ? "voted" : ""}`}
         onClick={onDownvote}
         disabled={isVoting}
-        aria-label={hasDownvoted ? "Remove downvote" : "Downvote post"}
+        aria-label={hasDownvoted ? "取消反对" : "反对帖子"}
       >
         <TbArrowBigDown aria-hidden="true" />
       </button>
@@ -124,7 +124,7 @@ const PostHeader = ({
           u/{author.username}
         </Link>
       ) : (
-        <span className="post-author">u/deleted</span>
+        <span className="post-author">u/已删除</span>
       )}
 
       {showSubreddit && subreddit && (
@@ -155,7 +155,7 @@ const PostContent = ({
         <TitleTag className="post-title">{title}</TitleTag>
         {imageUrl && (
           <div className="post-image-container">
-            <img src={imageUrl} alt="Post content" className="post-image" />
+            <img src={imageUrl} alt="帖子图片" className="post-image" />
           </div>
         )}
         {body && <p className="post-body">{body}</p>}
@@ -171,7 +171,7 @@ const PostContent = ({
       </div>
       {imageUrl && (
         <div className="post-thumbnail-container">
-          <img src={imageUrl} alt="Post thumbnail" className="post-thumbnail" />
+          <img src={imageUrl} alt="帖子缩略图" className="post-thumbnail" />
         </div>
       )}
     </div>
@@ -211,11 +211,11 @@ const CommentSection = ({
             className="comment-submit"
             disabled={isSubmitting || !newComment.trim()}
           >
-            {isSubmitting ? "Commenting..." : "Comment"}
+            {isSubmitting ? "评论发布中..." : "评论"}
           </button>
         </form>
       ) : (
-        <p className="comment-login-hint">Sign in to leave a comment.</p>
+        <p className="comment-login-hint">登录后即可发表评论。</p>
       )}
 
       <div className="comments-list">
@@ -271,7 +271,7 @@ const PostCard = ({
         await toggleDownvote({ postId: post._id });
       }
     } catch (err) {
-      setVoteError(err instanceof Error ? err.message : "Failed to vote.");
+      setVoteError(err instanceof Error ? err.message : "投票失败，请稍后重试。");
     } finally {
       setIsVoting(false);
     }
@@ -285,7 +285,7 @@ const PostCard = ({
       await createComment({ postId: post._id, body: content });
     } catch (err) {
       setCommentError(
-        err instanceof Error ? err.message : "Failed to create comment.",
+        err instanceof Error ? err.message : "评论发布失败，请稍后重试。",
       );
     } finally {
       setIsSubmittingComment(false);
@@ -293,7 +293,7 @@ const PostCard = ({
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("确认删除？")) return;
+    if (!window.confirm("确认要删除这篇帖子吗？")) return;
 
     setDeleteError("");
     setIsDeleting(true);
@@ -303,7 +303,7 @@ const PostCard = ({
         navigate(post.subreddit ? `/r/${post.subreddit.name}` : "/");
       }
     } catch (err) {
-      setDeleteError(err instanceof Error ? err.message : "Failed to delete post.");
+      setDeleteError(err instanceof Error ? err.message : "删除帖子失败，请稍后重试。");
     } finally {
       setIsDeleting(false);
     }
@@ -339,7 +339,7 @@ const PostCard = ({
           <button type="button" className="action-button" onClick={handleOpenComments}>
             <FaRegCommentAlt />
             <span>
-              {post.commentCount} {post.commentCount === 1 ? "Comment" : "Comments"}
+              {post.commentCount} 条评论
             </span>
           </button>
           {ownedByCurrentUser && (
@@ -348,10 +348,10 @@ const PostCard = ({
               className="action-button delete-button"
               onClick={handleDelete}
               disabled={isDeleting}
-              aria-label="Delete post"
+              aria-label="删除帖子"
             >
               <FaTrash />
-              <span>{isDeleting ? "Deleting..." : "Delete"}</span>
+              <span>{isDeleting ? "删除中..." : "删除"}</span>
             </button>
           )}
         </div>

@@ -27,7 +27,7 @@ const CreateDropdown = ({ isOpen, onClose }: CreateDropdownProps) => {
     <>
       <div className="dropdown-overlay" onClick={onClose} />
       <div className="create-dropdown">
-        <div className="dropdown-header">Create</div>
+        <div className="dropdown-header">创建</div>
         <div className="dropdown-options">
           {currentSubreddit && (
             <Link
@@ -39,9 +39,9 @@ const CreateDropdown = ({ isOpen, onClose }: CreateDropdownProps) => {
                 <FaPlus />
               </div>
               <div className="option-content">
-                <span className="option-title">Post</span>
+                <span className="option-title">发帖</span>
                 <span className="option-description">
-                  Share to r/{currentSubreddit}
+                  发布到 r/{currentSubreddit}
                 </span>
               </div>
             </Link>
@@ -56,8 +56,8 @@ const CreateDropdown = ({ isOpen, onClose }: CreateDropdownProps) => {
               <FaPlus />
             </div>
             <div className="option-content">
-              <span className="option-title">Community</span>
-              <span className="option-description">Create a new community</span>
+              <span className="option-title">社区</span>
+              <span className="option-description">创建新社区</span>
             </div>
           </button>
         </div>

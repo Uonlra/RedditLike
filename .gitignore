@@ -14,6 +14,7 @@ dist-ssr
 .gitignore
 .env
 .env.local
+/docs*
 
 
 # Editor directories and files

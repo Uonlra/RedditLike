@@ -24,7 +24,7 @@ const ProfilePage = () => {
     return (
       <div className="content-container">
         <div className="not-found">
-          <h1>User not found</h1>
+          <h1>未找到用户</h1>
         </div>
       </div>
     );
@@ -37,13 +37,13 @@ const ProfilePage = () => {
       <div className="profile-header">
         <h1>u/{publicUser?.username ?? username}</h1>
         <div className="profile-stats">
-          <span>{postCount} {postCount === 1 ? "post" : "posts"}</span>
+          <span>{postCount} 篇帖子</span>
         </div>
       </div>
       <div className="posts-container">
         {posts.length === 0 ? (
           <div className="no-posts">
-            <p>No posts yet</p>
+            <p>还没有帖子</p>
           </div>
         ) : (
           posts.map((post) => (
@@ -52,7 +52,7 @@ const ProfilePage = () => {
         )}
         {status === "CanLoadMore" && (
           <button className="load-more" onClick={() => loadMore(20)}>
-            Load More
+            加载更多
           </button>
         )}
       </div>

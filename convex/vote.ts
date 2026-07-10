@@ -14,7 +14,7 @@ export function voteKey(postId: Id<"posts">, voteType: VoteType) {
 async function ensurePostExists(ctx: MutationCtx, postId: Id<"posts">) {
   const post = await ctx.db.get(postId);
   if (!post) {
-    throw new ConvexError({ message: "Post not found." });
+    throw new ConvexError({ message: "未找到帖子。" });
   }
 }
 

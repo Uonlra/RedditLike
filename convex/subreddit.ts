@@ -35,7 +35,7 @@ export const create = mutation({
       .unique();
 
     if (subreddit) {
-      throw new ConvexError({ message: "Subreddit already exists" });
+      throw new ConvexError({ message: "该社区已存在。" });
     }
 
     await ctx.db.insert("subreddits", {

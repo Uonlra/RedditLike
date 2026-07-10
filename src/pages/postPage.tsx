@@ -17,7 +17,7 @@ const PostPage = () => {
   if (post === undefined) {
     return (
       <div className="post-page loading">
-        <div className="container">Loading...</div>
+        <div className="container">加载中...</div>
       </div>
     );
   }
@@ -25,7 +25,7 @@ const PostPage = () => {
   if (post === null) {
     return (
       <div className="post-page loading">
-        <div className="container">Post not found.</div>
+        <div className="container">未找到帖子。</div>
       </div>
     );
   }
@@ -35,7 +35,7 @@ const PostPage = () => {
       <div className="container">
         <div className="page-header">
           <button type="button" onClick={() => navigate(-1)} className="back-link">
-            <FaArrowLeft /> Back
+            <FaArrowLeft /> 返回
           </button>
         </div>
         <PostCard post={post} showSubreddit expandedView />

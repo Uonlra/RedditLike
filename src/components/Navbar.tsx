@@ -15,7 +15,7 @@ const Navbar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-content">
-        <Link to="/" className="logo-link" aria-label="Go to home">
+        <Link to="/" className="logo-link" aria-label="返回首页">
           <div className="logo-container">
             <FaReddit className="reddit-icon" />
             <span className="site-name">reddit</span>
@@ -28,7 +28,7 @@ const Navbar = () => {
           <Unauthenticated>
             <SignInButton mode="modal">
               <button type="button" className="sign-in-button">
-                Sign In
+                登录
               </button>
             </SignInButton>
           </Unauthenticated>
@@ -39,7 +39,7 @@ const Navbar = () => {
                 type="button"
                 className="icon-button"
                 onClick={() => setShowDropdown((isOpen) => !isOpen)}
-                aria-label="Create"
+                aria-label="创建"
               >
                 <FaPlus />
               </button>
@@ -53,8 +53,8 @@ const Navbar = () => {
               type="button"
               className="icon-button"
               onClick={() => user?.username && navigate(`/u/${user.username}`)}
-              title="View Profile"
-              aria-label="View profile"
+              title="查看个人主页"
+              aria-label="查看个人主页"
             >
               <FaUser />
             </button>

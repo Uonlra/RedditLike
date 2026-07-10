@@ -8,7 +8,7 @@
 
 .feed-container {
   width: 100%;
-  max-width: 800px;
+  max-width: 960px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -17,6 +17,17 @@
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 20px;
+}
+
+.feed-state,
+.feed-empty {
+  color: #57606a;
+  font-size: 14px;
+}
+
+.feed-empty {
+  padding: 24px 0;
+  text-align: center;
 }
 
 .section-title {
@@ -32,4 +43,3 @@
   width: 100%;
   gap: 10px;
 }
-
