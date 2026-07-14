@@ -1,145 +1,430 @@
+<div align="center">
+
 # RedditLike
 
-一个仿 Reddit 社区的前端跟做训练项目，使用 TypeScript + React 构建。目标是通过从零到一实现一个内容社区应用，系统掌握现代 React 前端开发的核心技能。
+### A full-stack, real-time Reddit-style community platform
 
-## 项目简介
+Built with **React 19 · Convex · Clerk · TypeScript** — no separate backend server, no REST client, no manual state syncing.
 
-RedditLike 是一个类 Reddit 的内容社区 Web 应用，用户可以浏览/创建板块（Subreddit）、发布帖子、评论、投票互动以及管理个人主页。本项目作为 TS + React 的实战训练，重点在于工程化实践与功能迭代，而非追求与 Reddit 完全一致的 UI。
+</div>
 
-## 技术栈
+<br>
 
-| 类别 | 技术 | 说明 |
-| --- | --- | --- |
-| 语言 | TypeScript 6 | 全量类型安全 |
-| 框架 | React 19 | 函数组件 + Hooks |
-| 构建 | Vite 8 | 快速冷启动与 HMR |
-| 代码规范 | Oxlint | 高性能 Lint |
-| 路由 | React Router | 客户端路由（待引入） |
-| 状态管理 | Zustand / Redux Toolkit | 待定，按阶段引入 |
-| 数据请求 | TanStack Query | 服务端状态管理（待引入） |
-| 样式方案 | Tailwind CSS / CSS Modules | 待定 |
-| 测试 | Vitest + React Testing Library | 待引入 |
-| Mock | MSW | 接口模拟（待引入） |
+<p align="center">
+  <a href="https://react.dev"><img src="https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=white&style=flat-square" alt="React 19"></a>
+  <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-6.0-3178C6?logo=typescript&logoColor=white&style=flat-square" alt="TypeScript"></a>
+  <a href="https://vitejs.dev"><img src="https://img.shields.io/badge/Vite-8.1-646CFF?logo=vite&logoColor=white&style=flat-square" alt="Vite"></a>
+  <a href="https://convex.dev"><img src="https://img.shields.io/badge/Convex-1.42-1A1A1A?logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0id2hpdGUiPjxwYXRoIGQ9Ik0xMiAyTDIgN2wxMCA1IDEwLTUtMTAtNXptMCAxMEwyIDE3bDEwIDUgMTAtNS0xMC01eiIvPjwvc3ZnPg==&style=flat-square" alt="Convex"></a>
+  <a href="https://clerk.com"><img src="https://img.shields.io/badge/Clerk-6.11-6C47FF?logo=clerk&logoColor=white&style=flat-square" alt="Clerk"></a>
+  <br>
+  <a href="#quick-start"><img src="https://img.shields.io/badge/Status-Active_🚀-22c55e?style=flat-square" alt="Status"></a>
+  <a href="./docs"><img src="https://img.shields.io/badge/Docs-8_Analysis_Reports-5e6ad2?style=flat-square" alt="Docs"></a>
+  <img src="https://img.shields.io/badge/Lint-Passing-22c55e?logo=oxlint&logoColor=white&style=flat-square" alt="Lint">
+  <img src="https://img.shields.io/badge/TypeCheck-Passing-22c55e?style=flat-square" alt="TypeCheck">
+  <img src="https://img.shields.io/badge/License-MIT-f59e0b?style=flat-square" alt="License">
+</p>
 
-> 标注「待引入」的依赖将按学习阶段逐步添加，避免一次性堆砌。
+---
 
-## 学习目标
+</p>
 
-- 熟练掌握 TypeScript 在 React 项目中的类型建模（props、hooks、事件、泛型）
-- 掌握 React 19 核心 Hooks 与函数组件设计模式
-- 掌握客户端路由、状态管理、数据请求的分层与组织
-- 建立组件化思维，编写可复用、可测试的 UI 组件
-- 形成完整的工程化习惯：目录规范、Lint、Git、测试、构建
+## Overview
 
-## 学习路线
+**RedditLike** is a real-time, Reddit-inspired community application where users can create communities (subreddits), publish posts with images, comment, and upvote/downvote content. Every interaction is instantly synchronized across all connected clients via Convex's WebSocket-based reactive queries — no refresh buttons, no polling, no stale data.
 
-本项目按由浅入深、由核心到外围的方式分阶段推进。每个阶段都是可独立交付的里程碑，完成后再进入下一阶段。
+### What makes this project interesting
 
-### 阶段 0：环境与基础（已完成）
+- **Zero-backend architecture** — Convex replaces your traditional API server, ORM, and real-time layer. Database queries are TypeScript functions; the client subscribes directly to query results.
+- **Auth-as-a-service** — Clerk handles registration, login, session management, and user profiles. A secure webhook keeps the Convex `users` table in sync with Clerk's identity store.
+- **Sharded counter for high-throughput writes** — Vote counts use `@convex-dev/sharded-counter` to avoid optimistic concurrency conflicts when many users vote simultaneously.
+- **Full-stack type safety** — One TypeScript schema (`convex/schema.ts`) generates types for both the database layer and the React client. No codegen step, no drift.
+- **Image uploads** — Files are uploaded directly to Convex's managed storage via a one-time upload URL, with a two-step commit (upload → attach storage ID to post).
 
-- [x] Vite + React + TypeScript 脚手架
-- [x] Oxlint 代码规范
-- [x] Git 仓库初始化
-- [ ] 目录结构约定与基础布局搭建
+---
 
-### 阶段 1：布局与路由
+## Features
 
-- [ ] 引入 React Router，搭建应用骨架
-- [ ] 实现整体布局：顶部导航 / 侧边栏 / 主内容区
-- [ ] 路由规划：首页、板块页、帖子详情页、用户页
-- [ ] 静态页面占位与导航跳转
+| Category | Feature | Status |
+|----------|---------|--------|
+| **Communities** | Create subreddit with name validation & uniqueness check | ✅ |
+| | View community page with hero, post count, and sidebar | ✅ |
+| | Search communities by name (fuzzy search index) | ✅ |
+| **Posts** | Create text + image posts within a community | ✅ |
+| | View posts in expanded (detail) or summary (feed) layout | ✅ |
+| | Delete own posts (owner-verified server-side) | ✅ |
+| | Search posts within a subreddit | ✅ |
+| | Hot/Ranking feed with vote score + comment count | ✅ |
+| | Paginated community & user post lists | ✅ |
+| **Comments** | Create comments on posts (auth-required) | ✅ |
+| | Real-time comment list (auto-updates) | ✅ |
+| **Voting** | Upvote / downvote toggle | ✅ |
+| | Switch vote (auto-removes opposite vote) | ✅ |
+| | Per-user vote state (highlight active vote) | ✅ |
+| | Sharded counter for accurate, conflict-free totals | ✅ |
+| **Users** | Clerk-powered authentication (sign in / sign up / sign out) | ✅ |
+| | Webhook-synced user profile (Clerk → Convex) | ✅ |
+| | Public profile page with post history | ✅ |
+| **Search** | Context-aware: community search globally, post search within a subreddit | ✅ |
+| | Keyboard-navigable results (enter to open first result) | ✅ |
+| **UX** | Loading skeletons, empty states, not-found states | ✅ |
+| | Responsive layout (mobile-adapted feed & subreddit pages) | ✅ |
+| | Dark canvas with Linear-inspired design tokens | ✅ |
 
-### 阶段 2：静态组件与数据建模
+<details>
+<summary><b>Planned / Roadmap</b></summary>
 
-- [ ] 定义核心领域类型（Post、Subreddit、User、Comment、Vote）
-- [ ] 实现帖子卡片、帖子列表、板块卡片等展示组件
-- [ ] 使用本地 mock 数据驱动页面渲染
-- [ ] 拆分容器组件与展示组件
+| Feature | Priority |
+|---------|----------|
+| Comment pagination (currently `take(50)`) | Medium |
+| Edit posts after creation | Medium |
+| Delete communities (with cascade) | Medium |
+| Delete comments | Medium |
+| Global post search (across all subreddits) | Medium |
+| "Newest" feed (time-sorted, not just hot) | Low |
+| Comment voting (upvote/downvote on comments) | Low |
+| Community subscribe / personalized home feed | Low |
+| User avatars in profile (from Clerk) | Low |
+| Image deletion on post delete (storage cleanup) | Low |
 
-### 阶段 3：状态管理
+</details>
 
-- [ ] 引入 Zustand 或 Redux Toolkit
-- [ ] 管理全局状态：当前用户、主题、已读帖子等
-- [ ] 实现投票（upvote/downvote）交互与本地状态联动
-- [ ] 理解客户端状态 vs 服务端状态的边界
+---
 
-### 阶段 4：数据请求与 Mock
+## Tech Stack
 
-- [ ] 引入 TanStack Query 处理服务端状态
-- [ ] 使用 MSW 搭建 Mock 接口层
-- [ ] 实现帖子列表、详情、评论的加载与缓存
-- [ ] 处理加载态、错误态、空态、分页/无限滚动
+| Layer | Technology | Version | Role |
+|-------|-----------|---------|------|
+| **UI Framework** | [React](https://react.dev) | 19.2 | Component rendering |
+| **Language** | [TypeScript](https://www.typescriptlang.org) | 6.0 | Full-stack type safety |
+| **Build Tool** | [Vite](https://vitejs.dev) | 8.1 | Dev server + bundler |
+| **Routing** | [React Router](https://reactrouter.com) | 7.18 | Client-side routing |
+| **Backend** | [Convex](https://convex.dev) | 1.42 | Real-time DB + functions + file storage |
+| **Auth** | [Clerk](https://clerk.com) | 6.11 | Authentication & user management |
+| **Auth Bridge** | `convex/react-clerk` | — | Injects Clerk token into Convex client |
+| **Vote Counter** | [`@convex-dev/sharded-counter`](https://github.com/get-convex/sharded-counter) | 0.2 | Conflict-free high-throughput counting |
+| **Webhook Verify** | [svix](https://svix.com) | 1.96 | Clerk webhook signature verification |
+| **Icons** | [react-icons](https://react-icons.github.io/react-icons/) | 5.7 | Fa / Tb / Io icon sets |
+| **Lint** | [oxlint](https://oxc.rs) | 1.69 | Fast linter |
 
-### 阶段 5：用户系统与表单
+---
 
-- [ ] 登录 / 注册页面与表单校验
-- [ ] 模拟鉴权（token 存储与请求拦截）
-- [ ] 受保护路由与权限控制
-- [ ] 发帖、评论的创建与提交
+## Architecture
 
-### 阶段 6：进阶功能
+```mermaid
+graph TB
+    subgraph Browser["🌐 Browser (Client)"]
+        ClerkProvider["ClerkProvider<br/>(auth identity)"]
+        ConvexBridge["ConvexProviderWithClerk<br/>(inject Clerk token)"]
+        App["App<br/>(BrowserRouter + Routes)"]
+        ClerkProvider --> ConvexBridge --> App
+        App -->|"useQuery / useMutation"| ConvexClient["ConvexReactClient"]
+    end
 
-- [ ] 搜索功能
-- [ ] 个人主页（帖子历史、收藏）
-- [ ] 消息通知（模拟）
-- [ ] 板块订阅与个性化首页
+    subgraph Convex["⚡ Convex Backend (convex/)"]
+        direction TB
+        Posts["posts.ts<br/>CRUD + search + paginate"]
+        Subreddit["subreddit.ts<br/>CRUD + search"]
+        Comments["comments.ts<br/>create + query"]
+        Vote["vote.ts<br/>toggle + count + hasVoted"]
+        Users["users.ts<br/>identity mapping"]
+        Leaderboard["leaderboard.ts<br/>hot ranking"]
+        Image["image.ts<br/>upload URL"]
+        Counter["counter.ts<br/>ShardedCounter"]
+        Schema["schema.ts<br/>6 tables + indexes"]
+        HTTP["http.ts<br/>Clerk webhook"]
+        Posts --> Schema
+        Subreddit --> Schema
+        Comments --> Schema
+        Vote --> Schema
+        Vote --> Counter
+        Leaderboard --> Counter
+    end
 
-### 阶段 7：质量与部署
+    subgraph Clerk["🔐 Clerk (External Auth)"]
+        ClerkAuth["User registration / login / session"]
+        ClerkWebhook["Webhook events<br/>user.created / updated / deleted"]
+    end
 
-- [ ] 关键组件单元测试（Vitest + RTL）
-- [ ] 性能优化：代码分割、懒加载、memo 化
-- [ ] 构建产物分析与部署（Vercel / Netlify）
-- [ ] README 完善与项目复盘
+    ConvexClient -.->|"WebSocket<br/>(real-time subscribe)"| Convex
+    ClerkAuth -->|"token"| ConvexBridge
+    ClerkWebhook -->|"HTTP POST<br/>(svix verified)"| HTTP
+    HTTP -->|"internalMutation"| Users
+```
 
-## 目录结构（规划）
+<details>
+<summary><b>📊 Data Flow Details</b></summary>
+
+### Real-time subscription flow
+```
+Component renders → useQuery(api.func, args) → WebSocket subscription established
+  → Convex runs query → returns result → component renders
+  → Any DB change matching the query → Convex re-runs → pushes new result → auto re-render
+```
+
+### Auth flow (dual-channel sync)
+```
+Channel 1 (async):  Clerk user event → webhook (http.ts) → upsertFromClerk / deleteFromClerk
+Channel 2 (sync):   API call → ctx.auth.getUserIdentity() → getOrCreateCurrentUser (fallback)
+```
+
+### Image upload flow (two-step commit)
+```
+1. SubmitPage → api.image.generateUploadUrl() → Convex returns one-time upload URL
+2. fetch(uploadUrl, { POST, body: file }) → file stored in Convex file storage → returns { storageId }
+3. api.posts.create({ ..., storageId }) → post created with image reference
+```
+
+### Vote toggle flow (with sharded counter)
+```
+toggleUpvote(postId):
+  1. Check existing upvote → if exists: delete + counter.dec (toggle off)
+  2. Check existing downvote → if exists: delete + counter.dec (switch vote)
+  3. Insert upvote + counter.inc
+```
+
+</details>
+
+---
+
+## Project Structure
 
 ```
-src/
-  assets/          # 静态资源
-  components/      # 通用展示组件
-  features/        # 按领域组织的业务模块
-    posts/
-    subreddits/
-    auth/
-    comments/
-  layouts/         # 布局组件
-  routes/          # 路由配置
-  store/           # 全局状态
-  services/        # 数据请求层
-  types/           # 全局类型定义
-  hooks/           # 自定义 Hooks
-  utils/           # 工具函数
-  App.tsx
-  main.tsx
+RedditLike/
+├── src/                              # Frontend source
+│   ├── main.tsx                      # Entry: ClerkProvider → ConvexProvider → App
+│   ├── App.tsx                       # Route definitions
+│   ├── index.css                     # Global styles + design tokens
+│   ├── components/                   # 8 reusable UI components
+│   │   ├── Layout.tsx                #   Page shell (Navbar + Outlet)
+│   │   ├── Navbar.tsx                #   Top navigation
+│   │   ├── Feed.tsx                  #   Hot posts feed
+│   │   ├── PostCard.tsx              #   ⭐ Core composite component
+│   │   ├── Comments.tsx              #   Single comment renderer
+│   │   ├── SearchBar.tsx             #   Context-aware search
+│   │   ├── CreateCommunityModal.tsx  #   Community creation dialog
+│   │   └── CreateDowndown.tsx        #   "Create" dropdown menu
+│   ├── pages/                        # 5 page-level components
+│   │   ├── HomePage.tsx              #   / (hot feed)
+│   │   ├── SubredditPage.tsx         #   /r/:name (community)
+│   │   ├── postPage.tsx              #   /post/:id (detail)
+│   │   ├── SubmitPage.tsx            #   /r/:name/submit (create post)
+│   │   └── ProfilePage.tsx           #   /u/:username (profile)
+│   └── styles/                       # 13 component-scoped CSS files
+│
+├── convex/                           # Convex backend source
+│   ├── schema.ts                     # 6 tables: users, subreddits, posts, comments, upvote, downvote
+│   ├── users.ts                      # Identity mapping + Clerk webhook sync
+│   ├── posts.ts                      # CRUD + search + paginated list
+│   ├── subreddit.ts                  # CRUD + search
+│   ├── comments.ts                   # Create + query
+│   ├── vote.ts                       # Toggle + count + hasVoted (factory pattern)
+│   ├── leaderboard.ts                # Hot ranking (score + comment count)
+│   ├── image.ts                      # Upload URL generation
+│   ├── counter.ts                    # ShardedCounter instance
+│   ├── http.ts                       # Clerk webhook HTTP endpoint
+│   ├── auth.config.ts                # Convex auth provider config
+│   └── convex.config.ts              # Component registration (sharded-counter)
+│
+├── docs/                             # 📚 Full project analysis (8 reports)
+│   ├── README.md                     #   Analysis index
+│   ├── 01-architecture/              #   Tech stack & data flow
+│   ├── 02-components/                #   Component deep-dive
+│   ├── 03-pages/                     #   Page logic analysis
+│   ├── 04-styles/                    #   Design system audit
+│   ├── 05-backend/                   #   API contracts
+│   └── 06-quality/                   #   Improvement checklist (53 items)
+│
+├── package.json
+├── vite.config.ts
+└── tsconfig.json
 ```
 
-## 快速开始
+<details>
+<summary><b>🗂️ Database Schema</b></summary>
+
+```typescript
+// convex/schema.ts
+users:        { username, externalId }              // indexed by externalId, username
+subreddits:   { name, normalizedName, description?, authorId }  // + search index on name
+posts:        { title, body?, authorId, subredditId, image? }   // + search index on title
+comments:     { body, authorId, postId }
+upvote:       { postId, userId }                    // indexed by postId+userId (composite)
+downvote:     { postId, userId }                    // indexed by postId+userId (composite)
+```
+
+**Indexes:**
+- `users.by_externalId` — Clerk identity lookup
+- `users.by_username` — public profile lookup
+- `subreddits.by_normalizedName` — case-insensitive name lookup
+- `subreddits.search_name` — fuzzy search on community name
+- `posts.by_authorId` — user's post history
+- `posts.by_subredditId` — community post listing
+- `posts.search_title` — fuzzy search on post title (filterable by subreddit)
+- `comments.by_postId` — comment thread lookup
+- `upvote/downvote.by_postId_and_userId` — hasVoted check (composite index)
+
+</details>
+
+---
+
+## Routes
+
+| Path | Page | Description |
+|------|------|-------------|
+| `/` | HomePage | Hot posts feed (top 10 by score + comments) |
+| `/r/:subredditName` | SubredditPage | Community page with hero, posts, and about sidebar |
+| `/r/:subredditName/submit` | SubmitPage | Create a new post in the community |
+| `/post/:postId` | PostPage | Single post detail view (expanded) |
+| `/u/:username` | ProfilePage | User profile with post history |
+| `*` | → `/` | Fallback redirect to home |
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+- **Node.js** ≥ 20
+- **npm** ≥ 10
+- A [Clerk](https://clerk.com) account (free tier is fine)
+- A [Convex](https://convex.dev) account (free tier is fine)
+
+### Setup
 
 ```bash
-# 安装依赖
+# 1. Clone the repository
+git clone https://github.com/your-username/RedditLike.git
+cd RedditLike
+
+# 2. Install dependencies
 npm install
 
-# 启动开发服务器
-npm run dev
-
-# 类型检查 + 构建
-npm run build
-
-# 预览构建产物
-npm run preview
-
-# 代码检查
-npm run lint
+# 3. Set up environment variables
+#    Create a .env.local file in the project root:
+cp .env.example .env.local  # if available, or create manually
 ```
 
-## 训练原则
+<details>
+<summary><b>📝 Environment Variables</b></summary>
 
-1. **分阶段交付**：每阶段完成后提交一次完整成果，便于回溯与复盘。
-2. **先类型后实现**：先建模领域类型，再编写组件逻辑，强化类型驱动开发。
-3. **组件职责单一**：展示组件保持纯函数，副作用与数据逻辑下沉到容器/Hooks。
-4. **不过度设计**：按当前阶段需要引入依赖，避免提前堆砌技术栈。
-5. **每阶段记录**：在本文件或单独笔记中记录踩坑点与决策理由。
+Create a `.env.local` file with the following:
 
-## 进度追踪
+```env
+# Convex
+VITE_CONVEX_URL=https://your-deployment.convex.cloud
 
-当前阶段：**阶段 1 — 布局与路由**（待开始）
+# Clerk
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_key
+```
+
+And in your Convex dashboard, set:
+
+```env
+CLERK_WEBHOOK_SECRET=whsec_your_webhook_secret
+```
+
+</details>
+
+```bash
+# 4. Set up Convex backend
+npx convex dev
+
+# 5. Set up Clerk webhook
+#    In Clerk Dashboard → Webhooks → add endpoint:
+#    URL: https://your-deployment.convex.cloud/clerk-users-webhook
+#    Events: user.created, user.updated, user.deleted
+
+# 6. Start the development server
+npm run dev
+```
+
+### Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start Vite dev server with HMR |
+| `npm run build` | Type-check (`tsc -b`) + production build (`vite build`) |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Run oxlint (0 errors, 0 warnings ✅) |
+
+---
+
+## Analysis Documentation
+
+This project includes a **comprehensive 8-layer analysis** in the [`docs/`](./docs) directory, covering everything from architecture to improvement checklists:
+
+| # | Category | File | What's Inside |
+|---|----------|------|---------------|
+| 01 | Architecture | [`tech-stack-and-data-flow.md`](./docs/01-architecture/tech-stack-and-data-flow.md) | Tech stack, architecture diagram, directory structure, data flow, routes, component responsibilities |
+| 02 | Components | [`component-analysis.md`](./docs/02-components/component-analysis.md) | Deep-dive on all 8 components: props, state, Convex API calls, interactions, reusability, issues |
+| 03 | Pages | [`page-analysis.md`](./docs/03-pages/page-analysis.md) | All 5 pages: data loading, interaction flows, state handling, component collaboration |
+| 04 | Styles | [`design-system.md`](./docs/04-styles/design-system.md) | Design tokens, color/spacing/radius/typography systems, responsive strategy, CSS organization |
+| 05 | Backend | [`api-contracts.md`](./docs/05-backend/api-contracts.md) | All 20 API contracts, type contracts, auth model, performance analysis, redundancy audit |
+| 06 | Quality | [`improvement-checklist.md`](./docs/06-quality/improvement-checklist.md) | 53 issues ranked P0-P3, 6-phase improvement roadmap, health score breakdown |
+
+---
+
+## Key Technical Decisions
+
+<details>
+<summary><b>⚡ Why Convex instead of a traditional backend?</b></summary>
+
+Convex eliminates the entire API server layer. Instead of writing Express routes, ORMs, and WebSocket handlers, you write TypeScript functions that run on Convex's infrastructure. The React client subscribes directly to query results via WebSocket — any database change automatically triggers a re-run of affected queries and pushes new results to all connected clients. This means **zero stale data, zero polling, zero manual cache invalidation**.
+
+</details>
+
+<details>
+<summary><b>🔐 Why Clerk instead of custom auth?</b></summary>
+
+Building authentication from scratch is risky and time-consuming. Clerk provides a complete auth solution — sign in, sign up, social login, MFA, session management, user profiles — as a hosted service. The `ConvexProviderWithClerk` bridge automatically injects the Clerk session token into every Convex call, so backend functions can access the authenticated identity via `ctx.auth.getUserIdentity()` without any custom token handling.
+
+</details>
+
+<details>
+<summary><b>🗳️ Why ShardedCounter for votes?</b></summary>
+
+When many users vote on the same post simultaneously, a naive counter (read → increment → write) causes optimistic concurrency conflicts — Convex would reject conflicting writes. `@convex-dev/sharded-counter` distributes the counter across multiple shards, allowing parallel increments without conflicts. The shards are transparently aggregated when reading the final count.
+
+</details>
+
+<details>
+<summary><b>🎨 Why a design token system in index.css?</b></summary>
+
+`src/index.css` defines a complete Linear-inspired dark-mode design token system (colors, spacing, radius, typography). This establishes a single source of truth for the visual language. *(Note: the component CSS files are currently in transition to fully adopt these tokens — see the [analysis](./docs/04-styles/design-system.md) for details.)*
+
+</details>
+
+---
+
+## Project Health
+
+| Metric | Score | Details |
+|--------|-------|---------|
+| **Lint** | ![100%](https://img.shields.io/badge/100%-22c55e?style=flat-square) | 0 errors, 0 warnings (oxlint) |
+| **Type Check** | ![100%](https://img.shields.io/badge/100%-22c55e?style=flat-square) | `tsc --noEmit` passes |
+| **Type Safety** | ![80%](https://img.shields.io/badge/80%-eab308?style=flat-square) | One unsafe type assertion (`postId as Id`) |
+| **Dead Code** | ![95%](https://img.shields.io/badge/95%-22c55e?style=flat-square) | 1 unused file (`messages.ts`), 2 unused helper functions |
+| **Auth Coverage** | ![80%](https://img.shields.io/badge/80%-eab308?style=flat-square) | Backend complete, 2 frontend gaps |
+| **Data Integrity** | ![60%](https://img.shields.io/badge/60%-f59e0b?style=flat-square) | No cascade deletion yet |
+| **Design Token Adoption** | ![0%](https://img.shields.io/badge/0%‑in_progress-ef4444?style=flat-square) | Tokens defined but not yet referenced by components |
+| **Overall** | ![~70%](https://img.shields.io/badge/~70%_overall-eab308?style=flat-square) | See [full analysis](./docs/06-quality/improvement-checklist.md) |
+
+---
+
+## Contributing
+
+This is a personal learning project, but feedback and suggestions are welcome! Please check the [improvement checklist](./docs/06-quality/improvement-checklist.md) for known issues and planned work.
+
+---
+
+## License
+
+This project is licensed under the **MIT License** — see the [LICENSE](./LICENSE) file for details.
+
+---
+
+<div align="center">
+
+<sub>Built as a full-stack TypeScript learning project. If you found this helpful, consider giving it a ⭐!</sub>
+
+</div>
