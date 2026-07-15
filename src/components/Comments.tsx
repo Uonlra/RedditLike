@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import type { Id } from "../../convex/_generated/dataModel";
-import "../styles/Comment.css";
 
 interface CommentProps {
   comment: {
@@ -13,21 +12,24 @@ interface CommentProps {
 
 const Comment = ({ comment }: CommentProps) => {
   return (
-    <div className="comment">
-      <div className="comment-header">
+    <div className="rounded-xs border border-gray-200 bg-white px-3 py-2.5 hover:border-gray-300">
+      <div className="mb-1.5 flex flex-wrap items-center gap-1 text-xs text-gray-500">
         {comment.author ? (
-          <Link to={`/u/${comment.author.username}`} className="comment-author">
+          <Link
+            to={`/u/${comment.author.username}`}
+            className="font-semibold text-gray-900 no-underline hover:text-blue-600 hover:underline"
+          >
             u/{comment.author.username}
           </Link>
         ) : (
-          <span className="comment-author">u/已删除</span>
+          <span className="font-semibold text-gray-900">u/已删除</span>
         )}
-        <span className="comment-dot">-</span>
-        <span className="comment-timestamp">
-          {new Date(comment._creationTime).toLocaleString("zh-CN")}
-        </span>
+        <span>-</span>
+        <span>{new Date(comment._creationTime).toLocaleString("zh-CN")}</span>
       </div>
-      <div className="comment-content">{comment.body}</div>
+      <div className="m-0 whitespace-pre-wrap wrap-anywhere text-sm leading-normal text-gray-900">
+        {comment.body}
+      </div>
     </div>
   );
 };

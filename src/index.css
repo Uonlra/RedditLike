@@ -1,4 +1,6 @@
-:root {
+@import "tailwindcss";
+@theme {
+  /* 颜色 token —— 字面量色值,生成 bg-* / text-* / border-* / fill-* / ring-* 工具类 */
   --color-canvas: #010102;
   --color-surface-1: #0f1011;
   --color-surface-2: #141516;
@@ -21,10 +23,20 @@
   --color-warning: #c99a43;
   --color-danger: #df6b6b;
 
+  /* 圆角 token —— 生成 rounded-xs / rounded-sm / rounded-md 工具类 */
   --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 8px;
 
+  /* 字体 token —— 从 --sans/--mono 改名,生成 font-sans / font-mono 工具类 */
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+:root {
+  /* 间距 token —— 保留为普通 CSS 变量,不进 @theme 的 --spacing-* 命名空间(避免破坏 v4 默认 spacing 体系) */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -32,6 +44,11 @@
   --space-5: 24px;
   --space-6: 32px;
 
+  /* 字体别名 —— 指向 @theme 生成的 --font-sans / --font-mono,保持旧引用 var(--sans)/var(--mono) 不断裂 */
+  --sans: var(--font-sans);
+  --mono: var(--font-mono);
+
+  /* 语义别名变量 —— 引用 @theme 输出的 --color-*,留这里因为它们不直接对应单一工具类 */
   --text: var(--color-text-muted);
   --text-h: var(--color-text);
   --bg: var(--color-canvas);
@@ -42,15 +59,11 @@
   --code-bg: var(--color-surface-2);
   --social-bg: var(--color-surface-1);
 
-  --sans:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
-  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-
+  /* 元素基础样式 —— 非 token,留 :root */
   color: var(--color-text-muted);
   background: var(--color-canvas);
   color-scheme: dark;
-  font: 14px/1.5 var(--sans);
+  font: 14px/1.5 var(--font-sans);
   letter-spacing: 0;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
