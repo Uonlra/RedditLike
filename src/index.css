@@ -1,4 +1,8 @@
 @import "tailwindcss";
+
+/* 暗色模式由 data-theme="dark" 属性驱动(对齐 shadcn/ui 惯例),而非系统 prefers-color-scheme */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 @theme {
   /* 颜色 token —— 字面量色值,生成 bg-* / text-* / border-* / fill-* / ring-* 工具类 */
   --color-canvas: #010102;
