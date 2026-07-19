@@ -6,12 +6,10 @@ import ProfilePage from "./pages/ProfilePage";
 import SubmitPage from "./pages/SubmitPage";
 import SubredditPage from "./pages/SubredditPage";
 import PostPage from "./pages/postPage";
-import ResponsiveDemo from "./ResponsiveDemo";
 
 function App() {
   return (
     <main>
-      <ResponsiveDemo />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>

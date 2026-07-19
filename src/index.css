@@ -75,6 +75,35 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@layer components {
+  /**
+   * .card —— 白底卡片基座。
+   * 用工具类覆盖 padding:  className="card p-4"
+   */
+  .card {
+    @apply rounded-xs border border-gray-200 bg-white hover:border-gray-300;
+  }
+
+  /**
+   * .btn-primary —— 蓝色胶囊按钮。
+   * 基于 Reddit 原 #0079d3 → Tailwind blue-600。
+   * disabled 态自动降 opacity,无需 JS 判断。
+   */
+  .btn-primary {
+    @apply rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white
+           hover:bg-blue-700 disabled:opacity-50;
+  }
+
+  /**
+   * .input —— 文本输入框基座。
+   * focus 时 border 变蓝表示焦点,移除浏览器默认 outline。
+   */
+  .input {
+    @apply rounded-xs border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900
+           placeholder:text-gray-400 focus:border-blue-500 focus:outline-none;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
