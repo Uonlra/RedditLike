@@ -6,9 +6,11 @@ import { IoMdClose } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
-import "../styles/SubmitPage.css";
+import { cn } from "../lib/utils";
 
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+
+const pageShellClassName = "mx-auto max-w-[740px] px-5 pt-[69px] pb-5";
 
 const SubmitPage = () => {
   const { subredditName } = useParams<{ subredditName: string }>();
@@ -85,7 +87,9 @@ const SubmitPage = () => {
           throw new Error("图片上传失败。");
         }
 
-        const uploadJson = (await uploadResult.json()) as { storageId: Id<"_storage"> };
+        const uploadJson = (await uploadResult.json()) as {
+          storageId: Id<"_storage">;
+        };
         storageId = uploadJson.storageId;
       }
 
@@ -105,9 +109,9 @@ const SubmitPage = () => {
 
   if (subreddit === undefined) {
     return (
-      <div className="content-container">
-        <div className="submit-container">
-          <h1>加载中...</h1>
+      <div className={pageShellClassName}>
+        <div className="card p-6">
+          <h1 className="m-0 text-lg font-medium text-text">加载中...</h1>
         </div>
       </div>
     );
@@ -115,48 +119,60 @@ const SubmitPage = () => {
 
   if (subreddit === null) {
     return (
-      <div className="content-container">
-        <div className="not-found">
-          <h1>未找到社区</h1>
-          <p>社区 r/{subredditName} 不存在。</p>
+      <div className={pageShellClassName}>
+        <div className="card px-6 py-12 text-center">
+          <h1 className="m-0 mb-3 text-2xl text-text">未找到社区</h1>
+          <p className="m-0 text-text-subtle">社区 r/{subredditName} 不存在。</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="content-container">
-      <div className="submit-container">
-        <h1>在 r/{subreddit.name} 发布帖子</h1>
-        <form className="submit-form" onSubmit={handleSubmit}>
+    <div className={pageShellClassName}>
+      <div className="card p-6">
+        <h1 className="m-0 mb-5 text-lg font-medium text-text">
+          在 r/{subreddit.name} 发布帖子
+        </h1>
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
           <input
             type="text"
             placeholder="标题"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
-            className="submit-title"
+            className="input w-full p-4 text-lg font-medium"
             maxLength={300}
             disabled={isSubmitting}
           />
 
-          <div className="media-input-container">
-            <label className="image-upload-label">
-              <FaImage className="image-icon" />
+          <div className="rounded-md border border-border bg-surface p-4">
+            <label
+              className={cn(
+                "inline-flex cursor-pointer items-center gap-2 rounded-md border border-border bg-surface-2 px-4 py-2 text-sm text-text transition-colors hover:bg-surface-3",
+                isSubmitting && "pointer-events-none opacity-60",
+              )}
+            >
+              <FaImage className="text-lg text-accent" />
               上传图片
               <input
                 type="file"
                 accept="image/*"
                 onChange={handleImageSelect}
-                style={{ display: "none" }}
+                className="hidden"
                 disabled={isSubmitting}
               />
             </label>
             {imagePreview && (
-              <div className="image-preview-container">
-                <img src={imagePreview} alt="图片预览" className="image-preview" />
+              <div className="relative mt-4 inline-block h-[300px] w-full max-w-[500px] overflow-hidden">
+                <img
+                  src={imagePreview}
+                  alt="图片预览"
+                  className="size-full rounded-md object-contain bg-surface-2"
+                />
                 <button
                   type="button"
-                  className="remove-image-button" aria-label="移除图片"
+                  className="absolute top-2 right-2 flex size-6 cursor-pointer items-center justify-center rounded-full border-0 bg-black/80 p-0 text-white transition-colors hover:bg-black disabled:opacity-60"
+                  aria-label="移除图片"
                   onClick={handleRemoveImage}
                   disabled={isSubmitting}
                 >
@@ -170,22 +186,28 @@ const SubmitPage = () => {
             placeholder="文本内容（可选）"
             value={body}
             onChange={(event) => setBody(event.target.value)}
-            className="submit-body"
+            className="input min-h-[200px] w-full resize-y"
             disabled={isSubmitting}
           />
-          {error && <div className="submit-error">{error}</div>}
-          <div className="submit-actions">
+          {error && (
+            <div className="text-sm leading-snug text-danger">{error}</div>
+          )}
+          <div className="mt-5 flex justify-start gap-2.5">
             <button
               type="button"
               onClick={() => navigate(`/r/${subreddit.name}`)}
-              className="back-button"
+              className="min-h-0 cursor-pointer rounded-md border-0 bg-surface-3 px-4 py-2 font-semibold text-text transition-colors hover:bg-border-strong disabled:cursor-not-allowed disabled:opacity-60"
               disabled={isSubmitting}
             >
               取消
             </button>
             <button
               type="submit"
-              className="submit-button"
+              className={cn(
+                "btn-primary min-h-0",
+                (isSubmitting || !title.trim()) &&
+                  "cursor-not-allowed opacity-60",
+              )}
               disabled={isSubmitting || !title.trim()}
             >
               {isSubmitting ? "发布中..." : "发布"}

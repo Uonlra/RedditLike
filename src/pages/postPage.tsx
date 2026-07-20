@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import PostCard from "../components/PostCard";
-import "../styles/PostPage.css";
 
 const PostPage = () => {
   const { postId } = useParams<{ postId: string }>();
@@ -16,25 +15,29 @@ const PostPage = () => {
 
   if (post === undefined) {
     return (
-      <div className="post-page loading">
-        <div className="container">加载中...</div>
+      <div className="flex min-h-[240px] items-center justify-center pt-[69px] text-lg text-text">
+        加载中...
       </div>
     );
   }
 
   if (post === null) {
     return (
-      <div className="post-page loading">
-        <div className="container">未找到帖子。</div>
+      <div className="flex min-h-[240px] items-center justify-center pt-[69px] text-lg text-text">
+        未找到帖子。
       </div>
     );
   }
 
   return (
-    <div className="post-page">
-      <div className="container">
-        <div className="page-header">
-          <button type="button" onClick={() => navigate(-1)} className="back-link">
+    <div className="pt-[69px]">
+      <div className="mx-auto max-w-[1320px] px-5">
+        <div className="mb-2.5">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="flex min-h-0 cursor-pointer items-center gap-2.5 border-0 bg-transparent p-0 font-inherit text-accent hover:text-accent-hover"
+          >
             <FaArrowLeft /> 返回
           </button>
         </div>

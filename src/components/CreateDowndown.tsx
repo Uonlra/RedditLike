@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
-import "../styles/CreateDropdown.css";
 import CreateCommunityModal from "./CreateCommunityModal";
 
 interface CreateDropdownProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const optionClassName =
+  "flex w-full min-h-14 cursor-pointer items-center gap-3.5 rounded-sm border-0 bg-transparent px-3 py-2 text-left text-inherit no-underline hover:bg-surface-2";
 
 const CreateDropdown = ({ isOpen, onClose }: CreateDropdownProps) => {
   const [isCommunityModalOpen, setIsCommunityModalOpen] = useState(false);
@@ -25,22 +27,27 @@ const CreateDropdown = ({ isOpen, onClose }: CreateDropdownProps) => {
 
   return (
     <>
-      <div className="dropdown-overlay" onClick={onClose} />
-      <div className="create-dropdown">
-        <div className="dropdown-header">创建</div>
-        <div className="dropdown-options">
+      <div className="fixed inset-0 z-[101]" onClick={onClose} />
+
+      <div className="absolute top-[calc(100%+4px)] right-0 z-[102] w-[330px] rounded-md border border-border bg-surface shadow-md">
+        <div className="border-b border-border px-[18px] pt-3.5 pb-3 text-[10px] font-bold tracking-normal text-text-subtle uppercase">
+          创建
+        </div>
+        <div className="px-2 pt-2.5 pb-3">
           {currentSubreddit && (
             <Link
-              className="dropdown-option"
+              className={optionClassName}
               to={`/r/${encodeURIComponent(currentSubreddit)}/submit`}
               onClick={onClose}
             >
-              <div className="option-icon">
+              <div className="flex size-6 shrink-0 items-center justify-center text-text-subtle [&_svg]:size-[15px]">
                 <FaPlus />
               </div>
-              <div className="option-content">
-                <span className="option-title">发帖</span>
-                <span className="option-description">
+              <div className="flex min-w-0 flex-col">
+                <span className="text-sm leading-[18px] font-bold text-text">
+                  发帖
+                </span>
+                <span className="text-xs leading-4 text-text-subtle">
                   发布到 r/{currentSubreddit}
                 </span>
               </div>
@@ -49,15 +56,19 @@ const CreateDropdown = ({ isOpen, onClose }: CreateDropdownProps) => {
 
           <button
             type="button"
-            className="dropdown-option"
+            className={optionClassName}
             onClick={handleCreateCommunity}
           >
-            <div className="option-icon">
+            <div className="flex size-6 shrink-0 items-center justify-center text-text-subtle [&_svg]:size-[15px]">
               <FaPlus />
             </div>
-            <div className="option-content">
-              <span className="option-title">社区</span>
-              <span className="option-description">创建新社区</span>
+            <div className="flex min-w-0 flex-col">
+              <span className="text-sm leading-[18px] font-bold text-text">
+                社区
+              </span>
+              <span className="text-xs leading-4 text-text-subtle">
+                创建新社区
+              </span>
             </div>
           </button>
         </div>
