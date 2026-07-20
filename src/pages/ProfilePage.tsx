@@ -2,7 +2,6 @@ import { usePaginatedQuery, useQuery } from "convex/react";
 import { useParams } from "react-router-dom";
 import { api } from "../../convex/_generated/api";
 import PostCard from "../components/PostCard";
-import "../styles/ProfilePage.css";
 
 const ProfilePage = () => {
   const { username } = useParams<{ username: string }>();
@@ -22,9 +21,9 @@ const ProfilePage = () => {
 
   if (!username) {
     return (
-      <div className="content-container">
-        <div className="not-found">
-          <h1>未找到用户</h1>
+      <div className="mx-auto max-w-[1320px] px-5 pt-[69px] pb-5">
+        <div className="card px-6 py-12 text-center">
+          <h1 className="m-0 text-2xl text-text">未找到用户</h1>
         </div>
       </div>
     );
@@ -33,17 +32,20 @@ const ProfilePage = () => {
   const postCount = publicUser?.posts ?? posts.length;
 
   return (
-    <div className="content-container">
-      <div className="profile-header">
-        <h1>u/{publicUser?.username ?? username}</h1>
-        <div className="profile-stats">
+    <div className="mx-auto max-w-[1320px] px-5 pt-[69px] pb-5">
+      <div className="card mb-6 p-6">
+        <h1 className="m-0 text-2xl font-semibold text-text">
+          u/{publicUser?.username ?? username}
+        </h1>
+        <div className="mt-2 text-[13px] font-semibold text-text-subtle">
           <span>{postCount} 篇帖子</span>
         </div>
       </div>
-      <div className="posts-container">
+
+      <div className="flex flex-col gap-4">
         {posts.length === 0 ? (
-          <div className="no-posts">
-            <p>还没有帖子</p>
+          <div className="card p-6 text-center text-text-subtle">
+            <p className="m-0">还没有帖子</p>
           </div>
         ) : (
           posts.map((post) => (
@@ -51,7 +53,11 @@ const ProfilePage = () => {
           ))
         )}
         {status === "CanLoadMore" && (
-          <button className="load-more" onClick={() => loadMore(20)}>
+          <button
+            type="button"
+            className="btn-primary self-center"
+            onClick={() => loadMore(20)}
+          >
             加载更多
           </button>
         )}
@@ -61,5 +67,3 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
-
-
