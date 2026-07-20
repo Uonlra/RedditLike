@@ -14,9 +14,11 @@
     "@clerk/react": "^6.11.3",
     "@convex-dev/sharded-counter": "^0.2.1",
     "@tailwindcss/vite": "^4.3.2",
+    "clsx": "^2.1.1",
     "convex": "^1.42.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
