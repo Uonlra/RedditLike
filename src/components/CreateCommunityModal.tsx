@@ -3,6 +3,32 @@ import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { cn } from "../lib/utils";
 
+/**
+ * CreateCommunityModal — 创建社区弹窗。
+ *
+ * ── 知识点：fixed 居中弹层 ──
+ *   遮罩：fixed inset-0 bg-black/50
+ *   面板：fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+ *   即 top:50% + left:50% + transform:translate(-50%,-50%) 经典居中。
+ *   文档：https://tailwindcss.com/docs/translate
+ *
+ * ── 知识点：任意透明度 bg-black/50 ──
+ *   /50 = 50% alpha。v4 用 color-mix 实现，替代 rgba(0,0,0,0.5)。
+ *   文档：https://tailwindcss.com/docs/background-color#changing-the-opacity
+ *
+ * ── 知识点：输入框前缀 r/ ──
+ *   外层 relative，前缀 absolute left-3，input 用 pl-7 给前缀留空。
+ *   比旧 CSS top:35px 硬编码更稳（不依赖 label 高度）。
+ *
+ * ── 知识点：旧 CSS 的 form { padding } 是全局选择器 ──
+ *   CreateCommunityModal.css 里 `form { padding: ... }` 会污染全站 form。
+ *   迁移后改为 form 上显式 className，这是 Tailwind 迁移的附带收益。
+ *
+ * ── 知识点：cn() 首次实战 ──
+ *   创建按钮复用 btn-primary，再用 cn 叠 height/padding 微调。
+ *   阶段四会用 shadcn Dialog 替换本组件（Esc/焦点陷阱/ARIA 内置）。
+ */
+
 interface CreateCommunityModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -62,17 +88,19 @@ const CreateCommunityModal = ({
 
   return (
     <>
+      {/* 半透明遮罩 */}
       <div
         className="fixed inset-0 z-[1000] bg-black/50"
         onClick={onClose}
       />
 
-      <div className="fixed top-1/2 left-1/2 z-[1001] w-full max-w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-md border border-border bg-surface shadow-lg">
-        <div className="flex items-center justify-between border-b border-border p-4">
-          <h2 className="m-0 text-base font-medium text-text">创建社区</h2>
+      {/* 居中面板 */}
+      <div className="fixed top-1/2 left-1/2 z-[1001] w-full max-w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-xs bg-white">
+        <div className="flex items-center justify-between border-b border-gray-200 p-4">
+          <h2 className="m-0 text-base font-medium text-gray-900">创建社区</h2>
           <button
             type="button"
-            className="flex size-6 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-2xl leading-none text-text-subtle hover:text-text"
+            className="flex size-6 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-2xl leading-none text-gray-500 hover:text-gray-900"
             onClick={onClose}
             aria-label="关闭创建社区弹窗"
           >
@@ -84,11 +112,12 @@ const CreateCommunityModal = ({
           <div className="relative mb-6">
             <label
               htmlFor="name"
-              className="mb-2 block font-medium text-text"
+              className="mb-2 block font-medium text-gray-900"
             >
               名称
             </label>
-            <span className="pointer-events-none absolute top-[38px] left-3 text-sm text-text-faint">
+            {/* 前缀 r/：absolute 叠在 input 左侧 */}
+            <span className="pointer-events-none absolute top-[38px] left-3 text-sm text-gray-500">
               r/
             </span>
             <input
@@ -99,9 +128,9 @@ const CreateCommunityModal = ({
               placeholder="社区名称"
               maxLength={21}
               disabled={isLoading}
-              className="input w-full pl-7 disabled:cursor-not-allowed disabled:bg-surface-2"
+              className="input w-full pl-7 disabled:cursor-not-allowed disabled:bg-gray-100"
             />
-            <p className="mt-1 text-xs text-text-subtle">
+            <p className="mt-1 text-xs text-gray-500">
               社区名称创建后无法修改，包括大小写。
             </p>
           </div>
@@ -109,9 +138,9 @@ const CreateCommunityModal = ({
           <div className="mb-6">
             <label
               htmlFor="description"
-              className="mb-2 block font-medium text-text"
+              className="mb-2 block font-medium text-gray-900"
             >
-              描述 <span className="font-normal text-text-subtle">（可选）</span>
+              描述 <span className="font-normal text-gray-500">（可选）</span>
             </label>
             <textarea
               id="description"
@@ -120,18 +149,18 @@ const CreateCommunityModal = ({
               placeholder="社区描述（可选）"
               maxLength={100}
               disabled={isLoading}
-              className="input min-h-[120px] w-full resize-y disabled:cursor-not-allowed disabled:bg-surface-2"
+              className="input min-h-[120px] w-full resize-y disabled:cursor-not-allowed disabled:bg-gray-100"
             />
           </div>
 
           {error && (
-            <div className="mb-4 text-sm text-danger">{error}</div>
+            <div className="mb-4 text-sm text-red-600">{error}</div>
           )}
 
           <div className="mt-6 flex justify-end gap-2">
             <button
               type="button"
-              className="h-8 min-h-0 cursor-pointer rounded-full border border-accent bg-transparent px-4 text-sm font-bold text-accent hover:bg-accent-soft disabled:cursor-not-allowed disabled:opacity-50"
+              className="h-8 cursor-pointer rounded-full border border-blue-600 bg-transparent px-4 text-sm font-bold text-blue-600 hover:bg-blue-600/5 disabled:cursor-not-allowed disabled:opacity-50"
               onClick={onClose}
               disabled={isLoading}
             >
@@ -139,7 +168,9 @@ const CreateCommunityModal = ({
             </button>
             <button
               type="submit"
-              className={cn("btn-primary h-8 min-h-0 px-4 disabled:cursor-not-allowed")}
+              className={cn(
+                "btn-primary h-8 px-4 disabled:cursor-not-allowed",
+              )}
               disabled={isLoading}
             >
               {isLoading ? "创建中..." : "创建社区"}

@@ -8,9 +8,34 @@ import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { cn } from "../lib/utils";
 
+/**
+ * SubmitPage — 发帖表单（标题 / 图片 / 正文）。
+ *
+ * ── 知识点：隐藏原生 file input ──
+ *   用 label 包住按钮外观，input 用 sr-only 或 hidden 藏起来。
+ *   点击 label 仍会触发文件选择（原生可访问性）。
+ *   文档：https://tailwindcss.com/docs/display#hiding-elements
+ *
+ * ── 知识点：图片预览 + absolute 关闭钮 ──
+ *   容器 relative；关闭钮 absolute top-2 right-2。
+ *   object-contain 保持比例，不裁切。
+ *   文档：https://tailwindcss.com/docs/object-fit
+ *
+ * ── 知识点：max-w 按页面收窄 ──
+ *   发帖页 max-w-[740px] 比 Profile 的 1320px 更窄，表单更易读。
+ *   不同页面壳层宽度不同是正常的，不必抽成全局 .content-container。
+ *
+ * ── 知识点：cn() 处理 disabled 态 ──
+ *   提交按钮在 isSubmitting 或标题为空时禁用，用 cn 叠 opacity/cursor。
+ *
+ * ── 知识点：响应式预览宽 ──
+ *   原 CSS 固定 500×300；小屏会溢出 → max-w-full w-[500px] 自适应。
+ */
+
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 
-const pageShellClassName = "mx-auto max-w-[740px] px-5 pt-[69px] pb-5";
+const pageShellClassName =
+  "mx-auto max-w-[740px] px-5 pt-[69px] pb-5";
 
 const SubmitPage = () => {
   const { subredditName } = useParams<{ subredditName: string }>();
@@ -110,8 +135,8 @@ const SubmitPage = () => {
   if (subreddit === undefined) {
     return (
       <div className={pageShellClassName}>
-        <div className="card p-6">
-          <h1 className="m-0 text-lg font-medium text-text">加载中...</h1>
+        <div className="rounded-xs border border-gray-300 bg-white p-6">
+          <h1 className="m-0 text-lg font-medium text-gray-900">加载中...</h1>
         </div>
       </div>
     );
@@ -120,9 +145,9 @@ const SubmitPage = () => {
   if (subreddit === null) {
     return (
       <div className={pageShellClassName}>
-        <div className="card px-6 py-12 text-center">
-          <h1 className="m-0 mb-3 text-2xl text-text">未找到社区</h1>
-          <p className="m-0 text-text-subtle">社区 r/{subredditName} 不存在。</p>
+        <div className="rounded-xs bg-white px-6 py-12 text-center shadow-sm">
+          <h1 className="m-0 mb-3 text-2xl text-gray-900">未找到社区</h1>
+          <p className="m-0 text-gray-500">社区 r/{subredditName} 不存在。</p>
         </div>
       </div>
     );
@@ -130,8 +155,8 @@ const SubmitPage = () => {
 
   return (
     <div className={pageShellClassName}>
-      <div className="card p-6">
-        <h1 className="m-0 mb-5 text-lg font-medium text-text">
+      <div className="rounded-xs border border-gray-300 bg-white p-6">
+        <h1 className="m-0 mb-5 text-lg font-medium text-gray-900">
           在 r/{subreddit.name} 发布帖子
         </h1>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
@@ -140,19 +165,19 @@ const SubmitPage = () => {
             placeholder="标题"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
-            className="input w-full p-4 text-lg font-medium"
+            className="w-full rounded-xs border border-gray-200 bg-white p-4 text-lg font-medium text-gray-900 transition-[border-color] duration-200 placeholder:text-gray-500 focus:border-blue-600 focus:outline-none disabled:opacity-60"
             maxLength={300}
             disabled={isSubmitting}
           />
 
-          <div className="rounded-md border border-border bg-surface p-4">
+          <div className="rounded-xs border border-gray-200 bg-white p-4">
             <label
               className={cn(
-                "inline-flex cursor-pointer items-center gap-2 rounded-md border border-border bg-surface-2 px-4 py-2 text-sm text-text transition-colors hover:bg-surface-3",
+                "inline-flex cursor-pointer items-center gap-2 rounded-xs border border-gray-200 bg-gray-100 px-4 py-2 text-sm text-gray-900 transition-colors hover:bg-gray-200",
                 isSubmitting && "pointer-events-none opacity-60",
               )}
             >
-              <FaImage className="text-lg text-accent" />
+              <FaImage className="text-lg text-blue-600" />
               上传图片
               <input
                 type="file"
@@ -167,7 +192,7 @@ const SubmitPage = () => {
                 <img
                   src={imagePreview}
                   alt="图片预览"
-                  className="size-full rounded-md object-contain bg-surface-2"
+                  className="size-full rounded-xs object-contain bg-gray-100"
                 />
                 <button
                   type="button"
@@ -186,17 +211,17 @@ const SubmitPage = () => {
             placeholder="文本内容（可选）"
             value={body}
             onChange={(event) => setBody(event.target.value)}
-            className="input min-h-[200px] w-full resize-y"
+            className="min-h-[200px] w-full resize-y rounded-xs border border-gray-200 bg-white p-3 text-sm text-gray-900 transition-[border-color] duration-200 placeholder:text-gray-500 focus:border-blue-600 focus:outline-none disabled:opacity-60"
             disabled={isSubmitting}
           />
           {error && (
-            <div className="text-sm leading-snug text-danger">{error}</div>
+            <div className="text-sm leading-snug text-orange-700">{error}</div>
           )}
           <div className="mt-5 flex justify-start gap-2.5">
             <button
               type="button"
               onClick={() => navigate(`/r/${subreddit.name}`)}
-              className="min-h-0 cursor-pointer rounded-md border-0 bg-surface-3 px-4 py-2 font-semibold text-text transition-colors hover:bg-border-strong disabled:cursor-not-allowed disabled:opacity-60"
+              className="cursor-pointer rounded-xs border-0 bg-gray-200 px-4 py-2 font-semibold text-gray-900 transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-60"
               disabled={isSubmitting}
             >
               取消
@@ -204,7 +229,7 @@ const SubmitPage = () => {
             <button
               type="submit"
               className={cn(
-                "btn-primary min-h-0",
+                "cursor-pointer rounded-xs border-0 bg-blue-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-800",
                 (isSubmitting || !title.trim()) &&
                   "cursor-not-allowed opacity-60",
               )}

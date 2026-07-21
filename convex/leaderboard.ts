@@ -57,7 +57,8 @@ function clampLimit(limit: number | undefined) {
   return Math.min(Math.max(Math.floor(limit), 1), MAX_TOP_POSTS_LIMIT);
 }
 
-function sortByHotness(a: TopPost, b: TopPost) {
+function sortByUpvotes(a: TopPost, b: TopPost) {
+  if (b.upvotes !== a.upvotes) return b.upvotes - a.upvotes;
   if (b.score !== a.score) return b.score - a.score;
   if (b.commentCount !== a.commentCount) return b.commentCount - a.commentCount;
   return b._creationTime - a._creationTime;
@@ -72,10 +73,10 @@ export const getTopPosts = query({
       .order("desc")
       .take(CANDIDATE_POSTS_LIMIT);
 
-    const topPosts = await Promise.all(posts.map((post) => enrichPost(ctx, post)));
+    const topPosts = await Promise.all(
+      posts.map((post) => enrichPost(ctx, post)),
+    );
 
-    return topPosts.sort(sortByHotness).slice(0, limit);
+    return topPosts.sort(sortByUpvotes).slice(0, limit);
   },
 });
-
-
