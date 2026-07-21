@@ -99,7 +99,7 @@ const formatTimestamp = (creationTime: number) => {
 };
 
 const voteButtonBase =
-  "grid size-7 place-items-center rounded-xs border-0 bg-transparent p-0 text-gray-500 cursor-pointer hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-65 [&_svg]:size-6";
+  "grid size-7 place-items-center rounded-sm border-0 bg-transparent p-0 text-gray-500 cursor-pointer hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-65 [&_svg]:size-6";
 
 const VoteButtons = ({
   voteCounts,
@@ -115,7 +115,7 @@ const VoteButtons = ({
 
   return (
     <div
-      className="flex min-w-[44px] flex-col items-center gap-0.5 bg-gray-100 px-1.5 py-2.5"
+      className="flex min-w-[44px] flex-col items-center gap-0.5 bg-[#f6f7f8] px-1.5 py-2.5"
       aria-label="帖子投票控件"
     >
       <span className="min-h-4 text-center text-xs font-bold leading-4 text-[#ff4500]">
@@ -125,8 +125,9 @@ const VoteButtons = ({
         type="button"
         className={cn(
           voteButtonBase,
-          (hasUpvoted || false) && "text-[#ff4500]",
-          "hover:text-[#ff4500]",
+          (hasUpvoted || false)
+            ? "bg-[#fff0ea] text-[#ff4500] hover:bg-[#ffe1d5]"
+            : "hover:text-[#ff4500]",
         )}
         onClick={onUpvote}
         disabled={isVoting}
@@ -144,8 +145,9 @@ const VoteButtons = ({
         type="button"
         className={cn(
           voteButtonBase,
-          (hasDownvoted || false) && "text-[#7193ff]",
-          "hover:text-[#7193ff]",
+          (hasDownvoted || false)
+            ? "bg-[#eef2ff] text-[#7193ff] hover:bg-[#e0e7ff]"
+            : "hover:text-[#7193ff]",
         )}
         onClick={onDownvote}
         disabled={isVoting}
@@ -423,7 +425,7 @@ const PostCard = ({
         <div className="mt-4 flex gap-[18px] md:mt-7">
           <button
             type="button"
-            className="flex cursor-pointer items-center gap-1.5 rounded-xs border-0 bg-transparent p-2 text-xs text-gray-500 hover:bg-gray-200"
+            className="flex h-8 cursor-pointer items-center gap-1.5 rounded-full border-0 bg-blue-600 px-3 text-xs font-bold text-white shadow-sm hover:bg-blue-700"
             onClick={handleOpenComments}
           >
             <FaRegCommentAlt />

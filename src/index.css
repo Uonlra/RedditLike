@@ -170,6 +170,7 @@ select {
 
 /* 仅裸 <button>；shadcn Button 带 data-slot="button"，避免双重皮肤 */
 button:not([data-slot="button"]) {
+@layer base {
   min-height: 40px;
   border: 1px solid var(--input);
   border-radius: var(--radius-md);
@@ -188,6 +189,7 @@ button:not([data-slot="button"]):hover {
   background: var(--muted);
 }
 
+}
 button:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--ring);
