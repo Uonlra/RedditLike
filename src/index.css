@@ -1,55 +1,19 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/inter";
 
-/* 暗色由 data-theme="dark" 驱动（对齐 shadcn）；默认浅色 */
+/*
+ * 暗色开关：data-theme="dark"（与 docs/07-learning-plan/theme-alignment-checklist.md 一致）
+ * 当前产品默认即暗色，:root 已是暗色 token；dark: 变体在 html 带 data-theme="dark" 时生效。
+ */
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-/**
- * 方案 D：语义 token
- * 组件只写 bg-canvas / bg-surface / text-text / border-border / text-accent …
- * 换主题只改变量，不改组件。
- */
+/* -------------------------------------------------------------------------- */
+/* 1) 产品设计 token（唯一字面量来源）                                           */
+/* -------------------------------------------------------------------------- */
 @theme {
-  /* —— 浅色默认 —— */
-  --color-canvas: #f0f2f5;
-  --color-surface: #ffffff;
-  --color-surface-1: #ffffff;
-  --color-surface-2: #f8f9fb;
-  --color-surface-3: #eef0f3;
-  --color-border: #e5e7eb;
-  --color-border-strong: #d1d5db;
-
-  --color-text: #111827;
-  --color-text-muted: #4b5563;
-  --color-text-subtle: #6b7280;
-  --color-text-faint: #9ca3af;
-
-  --color-accent: #5e6ad2;
-  --color-accent-hover: #4f5abf;
-  --color-accent-soft: color-mix(in oklab, #5e6ad2 14%, transparent);
-
-  --color-upvote: #ff4500;
-  --color-downvote: #7193ff;
-  --color-success: #34a853;
-  --color-warning: #c99a43;
-  --color-danger: #df6b6b;
-
-  --color-brand: #ff4500;
-  --color-brand-hover: #ff5722;
-
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-
-  --font-sans:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-}
-
-/* 暗色：覆盖同名 CSS 变量，utilities 自动跟着变 */
-[data-theme="dark"] {
   --color-canvas: #010102;
-  --color-surface: #141516;
   --color-surface-1: #0f1011;
   --color-surface-2: #141516;
   --color-surface-3: #18191a;
@@ -61,9 +25,10 @@
   --color-text-subtle: #8a8f98;
   --color-text-faint: #62666d;
 
+  /* 品牌紫（产品 accent，≠ shadcn 的 --accent 悬停面） */
   --color-accent: #5e6ad2;
   --color-accent-hover: #828fff;
-  --color-accent-soft: color-mix(in oklab, #5e6ad2 14%, transparent);
+  --color-accent-soft: rgba(94, 106, 210, 0.14);
 
   --color-upvote: #d9825f;
   --color-downvote: #7895e8;
@@ -71,12 +36,18 @@
   --color-warning: #c99a43;
   --color-danger: #df6b6b;
 
-  --color-brand: #ff4500;
-  --color-brand-hover: #ff5722;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
 
-  color-scheme: dark;
+  --font-sans: "Inter Variable", Inter, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 
+/* -------------------------------------------------------------------------- */
+/* 2) :root：间距别名 + 元素底 + shadcn 语义变量（全部指向产品色）                 */
+/* -------------------------------------------------------------------------- */
 :root {
   --space-1: 4px;
   --space-2: 8px;
@@ -88,19 +59,53 @@
   --sans: var(--font-sans);
   --mono: var(--font-mono);
 
-  --text: var(--color-text-muted);
-  --text-h: var(--color-text);
-  --bg: var(--color-canvas);
-  --border: var(--color-border);
-  --accent: var(--color-accent);
-  --accent-bg: var(--color-accent-soft);
-  --accent-border: var(--color-accent);
-  --code-bg: var(--color-surface-2);
-  --social-bg: var(--color-surface-1);
+  /* 旧语义别名（自定义 CSS 用） */
+  --text: #d0d6e0;
+  --text-h: #f7f8f8;
+  --bg: #010102;
+  --accent-bg: rgba(94, 106, 210, 0.14);
+  --accent-border: #5e6ad2;
+  --code-bg: #141516;
+  --social-bg: #0f1011;
 
-  color: var(--color-text-muted);
-  background: var(--color-canvas);
-  color-scheme: light;
+  /* —— shadcn 语义变量 → 产品 token（禁止再写一套浅色 oklch） —— */
+  --background: #010102;
+  --foreground: #f7f8f8;
+  --card: #0f1011;
+  --card-foreground: #f7f8f8;
+  --popover: #141516;
+  --popover-foreground: #f7f8f8;
+  --primary: #5e6ad2;
+  --primary-foreground: #ffffff;
+  --secondary: #18191a;
+  --secondary-foreground: #f7f8f8;
+  --muted: #141516;
+  --muted-foreground: #8a8f98;
+  /* shadcn accent = 悬停浅底，不是品牌紫 */
+  --accent: #18191a;
+  --accent-foreground: #f7f8f8;
+  --destructive: #df6b6b;
+  --border: #23252a;
+  --input: #34343a;
+  --ring: #5e6ad2;
+  --chart-1: #5e6ad2;
+  --chart-2: #d9825f;
+  --chart-3: #7895e8;
+  --chart-4: #34a853;
+  --chart-5: #8a8f98;
+  --radius: 8px;
+  --sidebar: #0f1011;
+  --sidebar-foreground: #f7f8f8;
+  --sidebar-primary: #5e6ad2;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #18191a;
+  --sidebar-accent-foreground: #f7f8f8;
+  --sidebar-border: #23252a;
+  --sidebar-ring: #5e6ad2;
+
+  color: #d0d6e0;
+  background: #010102;
+  color-scheme: dark;
   font: 14px/1.5 var(--font-sans);
   letter-spacing: 0;
   font-synthesis: none;
@@ -109,74 +114,102 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* data-theme="dark" 与 :root 同套（显式标记时保持一致） */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 3) 组件基座（迁移期；Day 9+ 逐步被 shadcn 替换）                               */
+/* -------------------------------------------------------------------------- */
 @layer components {
   .card {
-    @apply rounded-md border border-border bg-surface shadow-sm hover:border-border-strong;
+    @apply rounded-xs border border-border bg-card text-card-foreground
+      hover:border-border-strong;
   }
 
   .btn-primary {
-    @apply rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white
-           hover:bg-accent-hover disabled:opacity-50;
-  }
-
-  .btn-ghost-accent {
-    @apply rounded-full border border-accent bg-accent-soft px-3 py-1.5 text-xs font-semibold text-accent
-           hover:bg-accent/20;
+    @apply rounded-full bg-primary px-4 py-2 text-sm font-semibold
+      text-primary-foreground hover:bg-primary/90 disabled:opacity-50;
   }
 
   .input {
-    @apply rounded-md border border-border bg-surface px-3 py-2 text-sm text-text
-           placeholder:text-text-faint focus:border-accent focus:outline-none;
+    @apply rounded-xs border border-input bg-card px-3 py-2 text-sm text-foreground
+      placeholder:text-muted-foreground focus:border-ring focus:outline-none;
   }
 }
 
+/* -------------------------------------------------------------------------- */
+/* 4) 全局元素（裸 button 不作用于 shadcn [data-slot=button]）                    */
+/* -------------------------------------------------------------------------- */
 * {
   box-sizing: border-box;
 }
 
 html {
   min-height: 100%;
-  background: var(--color-canvas);
+  background: var(--background);
 }
 
 body {
   min-width: 320px;
   min-height: 100svh;
   margin: 0;
-  background: var(--color-canvas);
+  background:
+    linear-gradient(180deg, rgba(94, 106, 210, 0.06), transparent 240px),
+    var(--background);
 }
 
-@layer base {
-  button,
-  input,
-  textarea,
-  select {
-    font: inherit;
-    letter-spacing: 0;
-  }
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  letter-spacing: 0;
+}
 
-  button {
-    cursor: pointer;
-  }
+/* 仅裸 <button>；shadcn Button 带 data-slot="button"，避免双重皮肤 */
+button:not([data-slot="button"]) {
+  min-height: 40px;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-4);
+  color: var(--foreground);
+  background: var(--secondary);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
 
-  button:focus-visible,
-  a:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
+button:not([data-slot="button"]):hover {
+  border-color: var(--primary);
+  background: var(--muted);
+}
 
-  p {
-    margin: 0;
-  }
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+a {
+  color: #828fff;
+}
+
+p {
+  margin: 0;
+  color: #8a8f98;
 }
 
 code {
   display: inline-flex;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xs);
+  border: 1px solid #23252a;
+  border-radius: 4px;
   padding: 2px var(--space-2);
-  color: var(--color-text);
-  background: var(--color-surface-2);
+  color: #f7f8f8;
+  background: #141516;
   font-family: var(--mono);
   font-size: 13px;
 }
@@ -187,9 +220,104 @@ main {
 }
 
 main {
-  color: var(--color-text-muted);
+  color: #d0d6e0;
 }
 
 .cl-rootBox {
-  color: var(--color-text);
+  color: #f7f8f8;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 5) shadcn ↔ Tailwind 工具类桥接                                              */
+/* -------------------------------------------------------------------------- */
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  /* shadcn 工具类 bg-accent = 悬停面（surface-3），不是品牌紫 */
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.75);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.25);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 1.75);
+  --radius-3xl: calc(var(--radius) * 2);
+  --radius-4xl: calc(var(--radius) * 2.5);
+}
+
+/*
+ * 6) 产品色夺回：@theme inline 会占用 --color-border / --color-accent 等名。
+ *    品牌紫、surface、投票色等必须在此之后再次声明，组件里的 bg-accent（品牌）
+ *    若被 shadcn 悬停面占用，请改用 bg-primary；产品专用名如下保留。
+ */
+@theme {
+  --color-canvas: #010102;
+  --color-surface-1: #0f1011;
+  --color-surface-2: #141516;
+  --color-surface-3: #18191a;
+  /* 与 --border 同值，保证 border-border 仍是产品深边框 */
+  --color-border: #23252a;
+  --color-border-strong: #34343a;
+  --color-text: #f7f8f8;
+  --color-text-muted: #d0d6e0;
+  --color-text-subtle: #8a8f98;
+  --color-text-faint: #62666d;
+  /*
+   * 夺回品牌紫到 --color-accent：
+   * 现有业务 class（text-accent / border-accent）依赖此名。
+   * shadcn 悬停面请用 bg-muted / bg-secondary，不要用 bg-accent。
+   * Button 主色用 bg-primary（:root --primary 已是品牌紫）。
+   */
+  --color-accent: #5e6ad2;
+  --color-accent-hover: #828fff;
+  --color-accent-soft: rgba(94, 106, 210, 0.14);
+  --color-upvote: #d9825f;
+  --color-downvote: #7895e8;
+  --color-success: #34a853;
+  --color-warning: #c99a43;
+  --color-danger: #df6b6b;
+  --radius-xs: 4px;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
 }
