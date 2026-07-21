@@ -28,6 +28,8 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
     "oxlint": "^1.69.0",
+    "prettier": "^3.9.5",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "react-icons": "^5.7.0",
     "react-router-dom": "^7.18.1",
     "svix": "^1.96.1",
