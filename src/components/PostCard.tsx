@@ -56,6 +56,7 @@ interface PostCardProps {
   post: EnrichedPost;
   showSubreddit?: boolean;
   expandedView?: boolean;
+  rank?: number;
 }
 
 interface PostHeaderProps {
@@ -81,6 +82,7 @@ interface CommentSectionProps {
 
 interface VoteButtonsProps {
   voteCounts: VoteCounts | undefined;
+  rank?: number;
   hasUpvoted: boolean | undefined;
   hasDownvoted: boolean | undefined;
   isVoting: boolean;
@@ -103,6 +105,7 @@ const voteButtonBase =
 
 const VoteButtons = ({
   voteCounts,
+  rank,
   hasUpvoted,
   hasDownvoted,
   isVoting,
@@ -118,14 +121,20 @@ const VoteButtons = ({
       className="flex min-w-[44px] flex-col items-center gap-0.5 bg-[#f6f7f8] px-1.5 py-2.5"
       aria-label="帖子投票控件"
     >
-      <span className="min-h-4 text-center text-xs font-bold leading-4 text-[#ff4500]">
-        {upvotes}
+      <span
+        className={cn(
+          "min-h-4 text-center text-xs font-bold leading-4",
+          rank === undefined ? "text-[#ff4500]" : "text-[#828fff]",
+        )}
+        aria-label={rank === undefined ? "赞成数" : `热门第 ${rank} 名`}
+      >
+        {rank === undefined ? upvotes : `#${rank}`}
       </span>
       <button
         type="button"
         className={cn(
           voteButtonBase,
-          (hasUpvoted || false)
+          hasUpvoted || false
             ? "bg-[#fff0ea] text-[#ff4500] hover:bg-[#ffe1d5]"
             : "hover:text-[#ff4500]",
         )}
@@ -135,8 +144,13 @@ const VoteButtons = ({
       >
         <TbArrowBigUp aria-hidden="true" />
       </button>
-      <span className="min-h-4 text-center text-[13px] font-bold leading-4 text-gray-900">
-        {total}
+      <span
+        className={cn(
+          "min-h-4 text-center text-[13px] font-bold leading-4",
+          rank === undefined ? "text-gray-900" : "text-[#ff4500]",
+        )}
+      >
+        {rank === undefined ? total : upvotes}
       </span>
       <span className="min-h-4 text-center text-xs font-bold leading-4 text-[#7193ff]">
         {downvotes}
@@ -145,7 +159,7 @@ const VoteButtons = ({
         type="button"
         className={cn(
           voteButtonBase,
-          (hasDownvoted || false)
+          hasDownvoted || false
             ? "bg-[#eef2ff] text-[#7193ff] hover:bg-[#e0e7ff]"
             : "hover:text-[#7193ff]",
         )}
@@ -286,7 +300,7 @@ const CommentSection = ({
           <button
             type="submit"
             className={cn(
-              "h-9 min-w-24 cursor-pointer rounded-full border-0 bg-blue-600 px-4 text-[13px] font-bold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300 sm:w-auto",
+              "h-9 min-w-24 cursor-pointer rounded-full border-0 bg-[#828fff]/80 px-4 text-[13px] font-bold text-white hover:bg-[#828fff] disabled:cursor-not-allowed disabled:bg-gray-300 sm:w-auto",
               "w-full",
             )}
             disabled={isSubmitting || !newComment.trim()}
@@ -310,6 +324,7 @@ const CommentSection = ({
 const PostCard = ({
   post,
   showSubreddit = false,
+  rank,
   expandedView = false,
 }: PostCardProps) => {
   const navigate = useNavigate();
@@ -351,7 +366,9 @@ const PostCard = ({
         await toggleDownvote({ postId: post._id });
       }
     } catch (err) {
-      setVoteError(err instanceof Error ? err.message : "投票失败，请稍后重试。");
+      setVoteError(
+        err instanceof Error ? err.message : "投票失败，请稍后重试。",
+      );
     } finally {
       setIsVoting(false);
     }
@@ -383,7 +400,9 @@ const PostCard = ({
         navigate(post.subreddit ? `/r/${post.subreddit.name}` : "/");
       }
     } catch (err) {
-      setDeleteError(err instanceof Error ? err.message : "删除帖子失败，请稍后重试。");
+      setDeleteError(
+        err instanceof Error ? err.message : "删除帖子失败，请稍后重试。",
+      );
     } finally {
       setIsDeleting(false);
     }
@@ -399,6 +418,7 @@ const PostCard = ({
       <VoteButtons
         voteCounts={voteCounts}
         hasUpvoted={hasUpvoted}
+        rank={rank}
         hasDownvoted={hasDownvoted}
         isVoting={isVoting}
         onUpvote={() => handleVote("upvote")}
@@ -425,7 +445,7 @@ const PostCard = ({
         <div className="mt-4 flex gap-[18px] md:mt-7">
           <button
             type="button"
-            className="flex h-8 cursor-pointer items-center gap-1.5 rounded-full border-0 bg-blue-600 px-3 text-xs font-bold text-white shadow-sm hover:bg-blue-700"
+            className="flex h-8 cursor-pointer items-center gap-1.5 rounded-full border-0 bg-[#828fff]/80 px-3 text-xs font-bold text-white shadow-sm hover:bg-[#828fff]"
             onClick={handleOpenComments}
           >
             <FaRegCommentAlt />

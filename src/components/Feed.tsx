@@ -45,8 +45,13 @@ export function Feed() {
           </div>
         ) : (
           <div className="flex w-full flex-col gap-2.5">
-            {topPosts.map((post) => (
-              <PostCard key={post._id} post={post} showSubreddit />
+            {topPosts.map((post, index) => (
+              <PostCard
+                key={post._id}
+                post={post}
+                rank={index + 1}
+                showSubreddit
+              />
             ))}
           </div>
         )}

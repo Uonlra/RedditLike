@@ -67,7 +67,7 @@ const Navbar = () => {
             <SignInButton mode="modal">
               <button
                 type="button"
-                className="h-8 min-h-8 min-w-20 cursor-pointer whitespace-nowrap rounded-full border-0 bg-[#FF4500] px-4 text-sm font-bold text-white hover:bg-[#FF5722]"
+                className="inline-flex h-8 min-h-8 min-w-20 shrink-0 items-center justify-center whitespace-nowrap rounded-full border-0 bg-[#FF4500] px-4 text-sm leading-none font-bold text-white hover:bg-[#FF5722]"
               >
                 登录
               </button>
