@@ -35,3 +35,5 @@ convex/_generated/ai
 AGENTS.md
 CODEX.md
 skills-lock.json
+.claude/
+CLAUDE.md
