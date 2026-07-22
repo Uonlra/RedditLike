@@ -8,6 +8,7 @@ import { api } from "../../convex/_generated/api";
 import type { Doc, Id } from "../../convex/_generated/dataModel";
 import { cn } from "../lib/utils";
 import Comment from "./Comments";
+import { Button } from "./ui/button";
 
 /**
  * PostCard — 最复杂组件（投票 / 摘要布局 / 评论区）。
@@ -31,8 +32,8 @@ import Comment from "./Comments";
  * ── 知识点：expanded 变体 ──
  *   列表态 vs 详情态用 cn 叠不同字号/边框，不必拆两个组件。
  *
- * ── 知识点：全局 button 样式覆盖 ──
- *   index.css 给 button 加了边框/背景；投票/操作钮需 border-0 bg-transparent 重置。
+ * ── 知识点：普通操作按钮迁移到 shadcn Button ──
+ *   评论、删除、提交评论复用 Button；投票按钮保留原生 button，因为它们有专用选中态。
  */
 
 type EnrichedPost = Doc<"posts"> & {
@@ -297,16 +298,14 @@ const CommentSection = ({
             className="min-h-[92px] w-full resize-y rounded-xs border border-gray-300 bg-white px-3 py-2.5 text-sm leading-snug text-gray-900 outline-none placeholder:text-gray-500 focus:border-blue-600 focus:shadow-[0_0_0_1px_#0079d3] disabled:cursor-not-allowed disabled:bg-gray-100"
             disabled={isSubmitting}
           />
-          <button
+          <Button
             type="submit"
-            className={cn(
-              "h-9 min-w-24 cursor-pointer rounded-full border-0 bg-[#828fff]/80 px-4 text-[13px] font-bold text-white hover:bg-[#828fff] disabled:cursor-not-allowed disabled:bg-gray-300 sm:w-auto",
-              "w-full",
-            )}
+            size="sm"
+            className="w-full min-w-24 rounded-full bg-[#828fff]/80 text-[13px] font-bold text-white hover:bg-[#828fff] sm:w-auto"
             disabled={isSubmitting || !newComment.trim()}
           >
             {isSubmitting ? "评论发布中..." : "评论"}
-          </button>
+          </Button>
         </form>
       ) : (
         <p className="mb-3 text-[13px] text-gray-500">登录后即可发表评论。</p>
@@ -443,25 +442,28 @@ const PostCard = ({
           </div>
         )}
         <div className="mt-4 flex gap-[18px] md:mt-7">
-          <button
+          <Button
             type="button"
-            className="flex h-8 cursor-pointer items-center gap-1.5 rounded-full border-0 bg-[#828fff]/80 px-3 text-xs font-bold text-white shadow-sm hover:bg-[#828fff]"
+            size="sm"
+            className="rounded-full bg-[#828fff]/80 px-3 text-xs font-bold text-white hover:bg-[#828fff]"
             onClick={handleOpenComments}
           >
             <FaRegCommentAlt />
             <span>{post.commentCount} 条评论</span>
-          </button>
+          </Button>
           {ownedByCurrentUser && (
-            <button
+            <Button
               type="button"
-              className="flex cursor-pointer items-center gap-1.5 rounded-xs border-0 bg-transparent p-2 text-xs text-red-500 hover:bg-red-500/10 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+              variant="ghost"
+              size="sm"
+              className="rounded-xs px-2 text-xs text-red-500 hover:bg-red-500/10 hover:text-red-700"
               onClick={handleDelete}
               disabled={isDeleting}
               aria-label="删除帖子"
             >
               <FaTrash />
               <span>{isDeleting ? "删除中..." : "删除"}</span>
-            </button>
+            </Button>
           )}
         </div>
 

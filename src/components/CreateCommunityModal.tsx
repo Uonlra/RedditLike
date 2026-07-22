@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { cn } from "../lib/utils";
+import { Button } from "./ui/button";
 
 /**
  * CreateCommunityModal — 创建社区弹窗。
@@ -24,8 +24,8 @@ import { cn } from "../lib/utils";
  *   CreateCommunityModal.css 里 `form { padding: ... }` 会污染全站 form。
  *   迁移后改为 form 上显式 className，这是 Tailwind 迁移的附带收益。
  *
- * ── 知识点：cn() 首次实战 ──
- *   创建按钮复用 btn-primary，再用 cn 叠 height/padding 微调。
+ * ── 知识点：shadcn Button 首次实战 ──
+ *   取消/创建/关闭按钮复用 Button 的 variant 和 size，业务层只保留必要尺寸微调。
  *   阶段四会用 shadcn Dialog 替换本组件（Esc/焦点陷阱/ARIA 内置）。
  */
 
@@ -98,14 +98,16 @@ const CreateCommunityModal = ({
       <div className="fixed top-1/2 left-1/2 z-[1001] w-full max-w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-xs bg-white">
         <div className="flex items-center justify-between border-b border-gray-200 p-4">
           <h2 className="m-0 text-base font-medium text-gray-900">创建社区</h2>
-          <button
+          <Button
             type="button"
-            className="flex size-6 cursor-pointer items-center justify-center border-0 bg-transparent p-0 text-2xl leading-none text-gray-500 hover:text-gray-900"
+            variant="ghost"
+            size="icon"
+            className="size-6 text-2xl leading-none text-gray-500 hover:bg-gray-100 hover:text-gray-900"
             onClick={onClose}
             aria-label="关闭创建社区弹窗"
           >
             &times;
-          </button>
+          </Button>
         </div>
 
         <form className="px-4 py-6" onSubmit={handleSubmit}>
@@ -158,23 +160,24 @@ const CreateCommunityModal = ({
           )}
 
           <div className="mt-6 flex justify-end gap-2">
-            <button
+            <Button
               type="button"
-              className="h-8 cursor-pointer rounded-full border border-blue-600 bg-transparent px-4 text-sm font-bold text-blue-600 hover:bg-blue-600/5 disabled:cursor-not-allowed disabled:opacity-50"
+              variant="outline"
+              size="sm"
+              className="rounded-full border-blue-600 text-blue-600 hover:bg-blue-600/5 hover:text-blue-600"
               onClick={onClose}
               disabled={isLoading}
             >
               取消
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className={cn(
-                "btn-primary h-8 px-4 disabled:cursor-not-allowed",
-              )}
+              size="sm"
+              className="rounded-full"
               disabled={isLoading}
             >
               {isLoading ? "创建中..." : "创建社区"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

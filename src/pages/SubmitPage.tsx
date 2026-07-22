@@ -6,6 +6,7 @@ import { IoMdClose } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
+import { Button } from "../components/ui/button";
 import { cn } from "../lib/utils";
 
 /**
@@ -25,8 +26,8 @@ import { cn } from "../lib/utils";
  *   发帖页 max-w-[740px] 比 Profile 的 1320px 更窄，表单更易读。
  *   不同页面壳层宽度不同是正常的，不必抽成全局 .content-container。
  *
- * ── 知识点：cn() 处理 disabled 态 ──
- *   提交按钮在 isSubmitting 或标题为空时禁用，用 cn 叠 opacity/cursor。
+ * ── 知识点：shadcn Button 处理 disabled 态 ──
+ *   提交按钮在 isSubmitting 或标题为空时禁用，Button 组件统一提供禁用样式。
  *
  * ── 知识点：响应式预览宽 ──
  *   原 CSS 固定 500×300；小屏会溢出 → max-w-full w-[500px] 自适应。
@@ -194,15 +195,17 @@ const SubmitPage = () => {
                   alt="图片预览"
                   className="size-full rounded-xs object-contain bg-gray-100"
                 />
-                <button
+                <Button
                   type="button"
-                  className="absolute top-2 right-2 flex size-6 cursor-pointer items-center justify-center rounded-full border-0 bg-black/80 p-0 text-white transition-colors hover:bg-black disabled:opacity-60"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-2 right-2 size-6 rounded-full bg-black/80 text-white hover:bg-black hover:text-white"
                   aria-label="移除图片"
                   onClick={handleRemoveImage}
                   disabled={isSubmitting}
                 >
                   <IoMdClose />
-                </button>
+                </Button>
               </div>
             )}
           </div>
@@ -218,25 +221,22 @@ const SubmitPage = () => {
             <div className="text-sm leading-snug text-orange-700">{error}</div>
           )}
           <div className="mt-5 flex justify-start gap-2.5">
-            <button
+            <Button
               type="button"
               onClick={() => navigate(`/r/${subreddit.name}`)}
-              className="cursor-pointer rounded-xs border-0 bg-gray-200 px-4 py-2 font-semibold text-gray-900 transition-colors hover:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-60"
+              variant="secondary"
+              className="rounded-xs font-semibold"
               disabled={isSubmitting}
             >
               取消
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              className={cn(
-                "cursor-pointer rounded-xs border-0 bg-blue-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-blue-800",
-                (isSubmitting || !title.trim()) &&
-                  "cursor-not-allowed opacity-60",
-              )}
+              className="rounded-xs font-semibold"
               disabled={isSubmitting || !title.trim()}
             >
               {isSubmitting ? "发布中..." : "发布"}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
